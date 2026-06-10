@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turer 🧳 MOMFIES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Outfit:wght@300..800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .trip-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 32px; }
+    @media (max-width: 520px) { .trip-buttons { grid-template-columns: 1fr; } }
+
+    .trip-btn {
+      position: relative; cursor: pointer; border: var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      box-shadow: var(--shadow); aspect-ratio: 4/3;
+      display: flex; align-items: flex-end;
+      transition: transform .16s, box-shadow .16s;
+      background: var(--deep);
+    }
+    .trip-btn:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 var(--ink); }
+    .trip-btn__bg {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: .7;
+    }
+    .trip-btn__label {
+      position: relative; z-index: 2; width: 100%;
+      padding: 18px 20px;
+      background: linear-gradient(to top, rgba(10,34,56,.85), transparent);
+      color: var(--paper);
+    }
+    .trip-btn__title { font-family: var(--font-display); font-size: clamp(1.8rem,5vw,2.6rem); line-height: 1; }
+    .trip-btn__sub { font-size: .9rem; opacity: .85; margin-top: 2px; }
+
+    /* galleri modal */
+    .gal-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 10px;
+      margin-top: 18px;
+    }
+    .gal-item { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid var(--ink); }
+    .gal-item img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; cursor: zoom-in; }
+    .gal-item__cap {
+      padding: 6px 10px; font-family: var(--font-hand); font-size: 1.1rem;
+      background: var(--paper); color: var(--deep);
+    }
+    .gal-item__del {
+      position: absolute; top: 6px; right: 6px;
+      background: var(--coral); color: var(--paper); border: 2px solid var(--ink);
+      width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+      font-size: .75rem; font-weight: 800; line-height: 26px; text-align: center;
+    }
+    .gal-item.is-static .gal-item__del { display: none; }
+
+    /* lightbox */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 600;
+      background: rgba(0,0,0,.88); display: none;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .lightbox.is-open { display: flex; }
+    .lightbox img { max-width: 100%; max-height: 90vh; border-radius: 12px; border: 3px solid var(--paper); }
+    .lightbox__close {
+      position: absolute; top: 18px; right: 18px;
+      background: var(--coral); color: var(--paper); border: 2px solid var(--paper);
+      width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <section class="section wrap">
+    <div class="page-head">
+      <span class="eyebrow">Reiseloggen</span>
+      <h1>Våre <em>turer</em></h1>
+    </div>
+
+    <div class="trip-buttons">
+      <button class="trip-btn" onclick="openTrip('ibiza')">
+        <img class="trip-btn__bg" src="turer/ibiza/cover.jpg" onerror="this.style.display='none'" alt="">
+        <div class="trip-btn__label">
+          <div class="trip-btn__title">Ibiza</div>
+          <div class="trip-btn__sub">2023 · Spania 🇪🇸</div>
+        </div>
+      </button>
+      <button class="trip-btn" onclick="openTrip('tenerife')">
+        <img class="trip-btn__bg" src="turer/tenerife/cover.jpg" onerror="this.style.display='none'" alt="">
+        <div class="trip-btn__label">
+          <div class="trip-btn__title">Tenerife</div>
+          <div class="trip-btn__sub">2021 · Kanariøyene 🇪🇸</div>
+        </div>
+      </button>
+    </div>
+  </section>
+
+  <!-- GALLERI MODAL -->
+  <div class="modal" id="gal-modal">
+    <div class="modal__box" style="max-width:800px">
+      <button class="modal__close" id="gal-close">✕</button>
+      <span class="eyebrow" id="gal-eyebrow">Ibiza</span>
+      <h2 id="gal-title" style="font-size:2rem;margin:4px 0 6px">Ibiza 2023</h2>
+      <p id="gal-sub" class="muted"></p>
+
+      <!-- last opp fra nettside -->
+      <div class="card" style="margin-top:18px;margin-bottom:4px">
+        <div class="row-2">
+          <div class="field" style="margin:0">
+            <label for="gal-file">Legg til bilde</label>
+            <input type="file" accept="image/*" id="gal-file" style="padding:8px 0">
+          </div>
+          <div class="field" style="margin:0">
+            <label for="gal-cap">Caption</label>
+            <input class="input" id="gal-cap" placeholder="placeholder" maxlength="80">
+          </div>
+        </div>
+        <button class="btn btn--coral btn--sm" id="gal-add" style="margin-top:10px">＋ Last opp</button>
+      </div>
+
+      <div class="gal-grid" id="gal-grid"></div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox__close" id="lb-close">✕</button>
+    <img id="lb-img" src="" alt="">
+  </div>
+
+  <script src="main.js"></script>
+  <script>
+
+  /* =====================================================================
+     STATISKE BILDER FRA VSCODE
+     Legg til bilder her — src er filsti relativt til turer.html
+     Lag mappene: momfies/turer/ibiza/ og momfies/turer/tenerife/
+     Navngi gjerne bildene: 01.jpg, 02.jpg osv.
+     ===================================================================== */
+  const STATIC = {
+    ibiza: [
+  { src: "Ibiza/IMG_0490.jpeg", caption: "" },
+  { src: "Ibiza/IMG_0557.jpeg", caption: "" },
+  { src: "Ibiza/IMG_0562.jpeg", caption: "" },
+  { src: "Ibiza/IMG_0571.jpeg", caption: "" },
+  { src: "Ibiza/IMG_0579.jpeg", caption: "" },
+  { src: "Ibiza/IMG_0587.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2211.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2214.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2232.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2236.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2237.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2239.JPG",  caption: "" },
+  { src: "Ibiza/IMG_2242.PNG",  caption: "" },
+  { src: "Ibiza/IMG_2250.jpg",  caption: "" },
+  { src: "Ibiza/IMG_2252.JPG",  caption: "" },
+  { src: "Ibiza/IMG_2257.JPG",  caption: "" },
+  { src: "Ibiza/IMG_2265.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2275.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2300.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2302(1).jpeg", caption: "" },
+  { src: "Ibiza/IMG_2454.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2497.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2557.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2562.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2566.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2662.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2735.jpeg", caption: "" },
+  { src: "Ibiza/IMG_2742.PNG",  caption: "" },
+  { src: "Ibiza/IMG_2812.jpg",  caption: "" },
+],
+    tenerife: [
+  { src: "Tenerife/IMG_1906.jpeg", caption: "" },
+  { src: "Tenerife/IMG_1910.jpeg", caption: "" },
+  { src: "Tenerife/IMG_1934.jpeg", caption: "" },
+  { src: "Tenerife/IMG_2019.jpeg", caption: "" },
+  { src: "Tenerife/IMG_2118.jpeg", caption: "" },
+  { src: "Tenerife/IMG_2131.jpeg", caption: "" },
+  { src: "Tenerife/IMG_2696.jpeg", caption: "" },
+  { src: "Tenerife/IMG_2699.jpeg", caption: "" },
+  { src: "Tenerife/IMG_2753.jpeg", caption: "" },
+  { src: "Tenerife/IMG_2760.jpeg", caption: "" },
+  { src: "Tenerife/IMG_9363.jpeg", caption: "" },
+  { src: "Tenerife/IMG_9450.png",  caption: "" },
+  { src: "Tenerife/IMG_9451.png",  caption: "" },
+  { src: "Tenerife/IMG_9452.png",  caption: "" },
+  { src: "Tenerife/IMG_9454.jpeg", caption: "" },
+  { src: "Tenerife/IMG_9455.png",  caption: "" },
+  { src: "Tenerife/IMG_9475.png",  caption: "" },
+  { src: "Tenerife/IMG_9516.jpg",  caption: "" },
+  { src: "Tenerife/IMG_9521.jpg",  caption: "" },
+  { src: "Tenerife/IMG_9529.jpg",  caption: "" },
+  { src: "Tenerife/IMG_9531.jpg",  caption: "" },
+],
+  };
+
+  const META = {
+    ibiza:    { title: "Ibiza 2022",    sub: "x - x Juli · Ibiza, Spania 🇪🇸",         eyebrow: "Sommer 2023" },
+    tenerife: { title: "Tenerife 2021", sub: "x - x. november · Tenerife, Kanariøyene 🇪🇸", eyebrow: "Høst 2021" }
+  };
+
+  const modal = document.getElementById("gal-modal");
+  const lightbox = document.getElementById("lightbox");
+  let currentTrip = null;
+
+  function getUploaded(trip) { return Store.get("trip_photos_" + trip, []); }
+  function saveUploaded(trip, arr) { Store.set("trip_photos_" + trip, arr); }
+
+  function openTrip(trip) {
+    currentTrip = trip;
+    const m = META[trip];
+    document.getElementById("gal-eyebrow").textContent = m.eyebrow;
+    document.getElementById("gal-title").textContent = m.title;
+    document.getElementById("gal-sub").textContent = m.sub;
+    document.getElementById("gal-file").value = "";
+    document.getElementById("gal-cap").value = "";
+    renderGrid();
+    modal.classList.add("is-open");
+  }
+
+  function renderGrid() {
+    const grid = document.getElementById("gal-grid");
+    const uploaded = getUploaded(currentTrip);
+    const statics = STATIC[currentTrip] || [];
+    const all = [
+      ...uploaded.map(p => ({ ...p, isStatic: false })),
+      ...statics.map(p => ({ ...p, id: p.src, isStatic: true }))
+    ];
+
+    if (!all.length) {
+      grid.innerHTML = `<p class="empty" style="grid-column:1/-1">Ingen bilder enda. Legg til det første! 📸</p>`;
+      return;
+    }
+
+    grid.innerHTML = all.map(p => `
+      <div class="gal-item ${p.isStatic ? "is-static" : ""}">
+        <img src="${p.isStatic ? esc(p.src) : p.url}" alt="${esc(p.caption||"")}"
+          onclick="openLightbox('${p.isStatic ? esc(p.src) : p.id}', ${p.isStatic})">
+        ${p.caption ? `<div class="gal-item__cap">${esc(p.caption)}</div>` : ""}
+        ${!p.isStatic ? `<button class="gal-item__del" data-del="${p.id}">✕</button>` : ""}
+      </div>`).join("");
+
+    grid.querySelectorAll("[data-del]").forEach(b =>
+      b.onclick = () => {
+        const arr = getUploaded(currentTrip).filter(x => x.id !== b.dataset.del);
+        saveUploaded(currentTrip, arr); renderGrid();
+      });
+  }
+
+  document.getElementById("gal-add").onclick = () => {
+    const file = document.getElementById("gal-file").files[0];
+    const caption = document.getElementById("gal-cap").value.trim();
+    if (!file) { toast("Velg et bilde først 📷"); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const arr = getUploaded(currentTrip);
+      arr.unshift({ id: uid(), url: e.target.result, caption });
+      saveUploaded(currentTrip, arr); renderGrid();
+      document.getElementById("gal-file").value = "";
+      document.getElementById("gal-cap").value = "";
+      toast("Bilde lagt til! 📸");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  function openLightbox(idOrSrc, isStatic) {
+    const uploaded = getUploaded(currentTrip);
+    const statics = STATIC[currentTrip] || [];
+    let src = isStatic
+      ? statics.find(p => p.src === idOrSrc)?.src
+      : uploaded.find(p => p.id === idOrSrc)?.url;
+    if (!src) return;
+    document.getElementById("lb-img").src = src;
+    lightbox.classList.add("is-open");
+  }
+
+  document.getElementById("gal-close").onclick = () => modal.classList.remove("is-open");
+  document.getElementById("lb-close").onclick = () => lightbox.classList.remove("is-open");
+  modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("is-open"); });
+  lightbox.addEventListener("click", e => { if (e.target === lightbox) lightbox.classList.remove("is-open"); });
+  </script>
+</body>
+</html>

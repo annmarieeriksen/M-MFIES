@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Albania 🏝️ MOMFIES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Outfit:wght@300..800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .photowall { columns: 2; gap: 16px; }
+    @media (min-width: 640px) { .photowall { columns: 3; } }
+    @media (min-width: 900px) { .photowall { columns: 4; } }
+    .photo-item {
+      break-inside: avoid; margin-bottom: 16px;
+      background: var(--paper); border: var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); overflow: hidden;
+      transition: transform .16s, box-shadow .16s;
+    }
+    .photo-item:hover { transform: translateY(-4px) rotate(-1deg); box-shadow: var(--shadow); }
+    .photo-item:nth-child(2n):hover { transform: translateY(-4px) rotate(1deg); }
+    .photo-item img { width: 100%; display: block; object-fit: cover; border-bottom: var(--border); }
+    .photo-item__caption {
+      padding: 10px 12px;
+      font-family: var(--font-hand); font-size: 1.2rem; color: var(--deep);
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+    }
+    .photo-item__del {
+      border: 0; background: transparent; cursor: pointer;
+      font-size: .85rem; opacity: .4; font-family: var(--font-body);
+    }
+    .photo-item__del:hover { opacity: 1; color: var(--coral); }
+
+    .logbook { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+    .log-day {
+      cursor: pointer; text-align: center;
+      background: var(--paper); border: var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); padding: 18px 12px;
+      transition: transform .16s, box-shadow .16s;
+      position: relative;
+    }
+    .log-day:hover { transform: translateY(-4px) rotate(-1deg); box-shadow: var(--shadow); }
+    .log-day:nth-child(2n):hover { transform: translateY(-4px) rotate(1deg); }
+    .log-day__num { font-family: var(--font-display); font-size: 2.2rem; color: var(--azure); line-height: 1; }
+    .log-day__name { font-weight: 800; font-size: .85rem; margin: 4px 0 2px; }
+    .log-day__date { font-size: .78rem; color: #41566b; }
+    .log-day__has {
+      position: absolute; top: 8px; right: 8px;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--mint); border: 2px solid var(--ink);
+    }
+    .log-gallery {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 10px;
+    }
+    .log-gallery img {
+      width: 100%; aspect-ratio: 1; object-fit: cover;
+      border-radius: 10px; border: 2px solid var(--ink);
+    }
+    .log-gallery__item { position: relative; }
+    .log-gallery__del {
+      position: absolute; top: 4px; right: 4px;
+      background: var(--coral); color: var(--paper); border: 2px solid var(--ink);
+      width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+      font-size: .75rem; font-weight: 800; line-height: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <header class="albania-hero">
+    <div class="wrap">
+      <span class="eyebrow" style="color:var(--sky)"><3<3<3<3<3<3<3<3<3<<3</span>
+      <h1>Albania <em>2026</em></h1>
+      <p class="lead" id="hero-place">📍 Golem · 22.–29. juni</p>
+      <div class="event__count" id="countdown"></div>
+    </div>
+  </header>
+
+  <!-- DE 6 GYLNE REGLER -->
+  <section class="albania-section">
+    <div class="wrap">
+      <div class="card" style="max-width:540px;margin:0 auto;text-align:center">
+        <h2 style="font-size:2rem;margin:4px 0 22px">De 6 gylne <em style="color:var(--coral)">regler</em></h2>
+        <ol style="list-style:none;padding:0;display:grid;gap:12px">
+          <li style="display:flex;align-items:center;gap:14px;font-size:1.15rem;font-weight:700;padding:12px 16px;background:var(--foam);border:var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm)"><span style="font-size:1.6rem">☀️</span> Per solbrent</li>
+          <li style="display:flex;align-items:center;gap:14px;font-size:1.15rem;font-weight:700;padding:12px 16px;background:var(--foam);border:var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm)"><span style="font-size:1.6rem">😍</span> Hvis du blir sjekket opp</li>
+          <li style="display:flex;align-items:center;gap:14px;font-size:1.15rem;font-weight:700;padding:12px 16px;background:var(--foam);border:var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm)"><span style="font-size:1.6rem">😏</span> Hvis du sjekker opp noen andre</li>
+          <li style="display:flex;align-items:center;gap:14px;font-size:1.15rem;font-weight:700;padding:12px 16px;background:var(--foam);border:var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm)"><span style="font-size:1.6rem">🤮</span> Hvis du spyr</li>
+          <li style="display:flex;align-items:center;gap:14px;font-size:1.15rem;font-weight:700;padding:12px 16px;background:var(--foam);border:var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm)"><span style="font-size:1.6rem">😭</span> Hvis du griner</li>
+          <li style="display:flex;align-items:center;gap:14px;font-size:1.15rem;font-weight:700;padding:12px 16px;background:var(--foam);border:var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm)"><span style="font-size:1.6rem">🐌</span> Hvis du er flaskehals</li>
+        </ol>
+        <p style="margin-top:18px;font-family:var(--font-hand);font-size:1.4rem;color:var(--blue)">Brudd på en regel = et kryss. 🥂</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DRIKKETELLER -->
+  <section class="albania-section">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Skål 🥂</span>
+        <h2>Drikke<em>teller</em></h2>
+      </div>
+      <div class="counter-grid" id="counter-grid"></div>
+      <div class="total-bar">
+        <span><b id="drink-total">0</b> enheter registrert på turen</span>
+        <span style="display:flex;gap:10px;align-items:center">
+          <button class="btn btn--ghost btn--sm" id="drink-reset">Nullstill</button>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPINNEHJUL -->
+  <section class="albania-section">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Spinn <em>hjulet</em></h2>
+      </div>
+      <div class="wheel-wrap">
+        <div class="wheel-stage">
+          <div class="wheel-pointer"></div>
+          <div class="wheel" id="wheel"><div class="wheel__hub">🎯</div></div>
+        </div>
+        <div class="wheel-winner" id="winner"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+          <button class="btn btn--coral" id="spin">🌀Spinn</button>
+          <button class="btn btn--ghost btn--sm" id="edit-names">Endre navn</button>
+        </div>
+        <div id="names-editor" style="display:none;width:100%;max-width:420px">
+          <div class="field">
+            <label for="names-area">Ett navn per linje</label>
+            <textarea class="textarea" id="names-area"></textarea>
+          </div>
+          <button class="btn btn--blue btn--sm" id="names-save">Lagre navn</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITATVEGG -->
+  <section class="albania-section">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Sitat<em>veggen</em></h2>
+        <p>HVEM HAR SAGT NOE DUMT NÅ...</p>
+      </div>
+      <div class="card quote-form" style="margin-bottom:24px">
+        <div class="field" style="margin:0">
+          <label for="q-text">Sitatet</label>
+          <input class="input" id="q-text" placeholder="(:" maxlength="160">
+        </div>
+        <div class="field" style="margin:0">
+          <label for="q-who">Hvem sa det?</label>
+          <input class="input" id="q-who" placeholder="..........???" maxlength="40">
+        </div>
+        <button class="btn btn--coral" id="q-add" style="justify-self:start">＋ Heng opp på veggen</button>
+      </div>
+      <div class="quotes" id="quotes"></div>
+    </div>
+  </section>
+
+  <!-- BILDEVEGG -->
+  <section class="albania-section">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Bilde<em>veggen</em></h2>
+      </div>
+      <div class="card" style="margin-bottom:28px">
+        <div class="field" style="margin:0">
+          <label for="ph-file">Velg bilde fra telefon / galleri</label>
+          <input type="file" accept="image/*" id="ph-file" style="padding:8px 0">
+        </div>
+        <div class="field" style="margin:8px 0 0">
+          <label for="ph-caption">Caption (valgfritt)</label>
+          <input class="input" id="ph-caption" placeholder="Marie fant seg en 40 åring 🌊" maxlength="80">
+        </div>
+        <button class="btn btn--coral" id="ph-add" style="margin-top:12px">＋ Legg til bilde</button>
+      </div>
+      <div id="photowall"></div>
+    </div>
+  </section>
+
+  <!-- UKEPLAN -->
+  <section class="albania-section">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Uke<em>plan</em></h2>
+      </div>
+      <div class="plan-scroll">
+        <table class="plan">
+          <thead>
+            <tr><th>Dag</th><th>Tema</th><th>Mat / middag</th><th>Notat</th></tr>
+          </thead>
+          <tbody id="plan-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGGEBOK -->
+  <section class="albania-section">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Logge<em>bok</em></h2>
+      </div>
+      <div id="logbook"></div>
+    </div>
+  </section>
+
+  <!-- LOGGEBOK MODAL -->
+  <div class="modal" id="log-modal">
+    <div class="modal__box">
+      <button class="modal__close" id="log-close">✕</button>
+      <span class="eyebrow" id="log-eyebrow">Dag 1</span>
+      <h2 id="log-title" style="font-size:1.8rem;margin:4px 0 16px">Mandag 22. juni</h2>
+      <div class="field">
+        <label for="log-text">Hva for noe sprell skjedde i dag?(: </label>
+        <textarea class="textarea" id="log-text" placeholder="Emma aka ned trappa" style="min-height:120px"></textarea>
+      </div>
+      <div class="field">
+        <label for="log-file">Legg til bilde</label>
+        <input type="file" accept="image/*" id="log-file" style="padding:8px 0">
+      </div>
+      <button class="btn btn--coral" id="log-img-add">＋ Last opp bilde</button>
+      <div id="log-gallery" style="margin-top:16px"></div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+  <script>
+  const DRINK_SYNC = null;
+
+  /* ---------- NEDTELLING ---------- */
+  (function () {
+    const box = document.getElementById("countdown");
+    const target = new Date(GANG.trip.start + "T00:00:00");
+    function tick() {
+      let diff = Math.floor((target - new Date()) / 1000);
+      if (diff <= 0) { box.innerHTML = `<div class="count-box" style="min-width:auto;padding:8px 18px"><b>🎉 Vi er på tur!</b></div>`; return; }
+      const d = Math.floor(diff/86400); diff-=d*86400;
+      const h = Math.floor(diff/3600);  diff-=h*3600;
+      const m = Math.floor(diff/60);    const s = diff-m*60;
+      box.innerHTML = [["dager",d],["timer",h],["min",m],["sek",s]]
+        .map(([l,v])=>`<div class="count-box"><b>${String(v).padStart(2,"0")}</b><span>${l}</span></div>`).join("");
+    }
+    tick(); setInterval(tick,1000);
+  })();
+
+  /* ---------- DRIKKETELLER ---------- */
+  (function () {
+    const TYPES = [
+      { key:"shot", emoji:"🥃", label:"Shot" },
+      { key:"ol",   emoji:"🍺", label:"Øl" },
+      { key:"drink",emoji:"🍹", label:"Drink" },
+      { key:"vin",  emoji:"🍷", label:"Vin" },
+      { key:"vann", emoji:"💧", label:"Vann" }
+    ];
+    const grid = document.getElementById("counter-grid");
+    const totalEl = document.getElementById("drink-total");
+    let drinks = Store.seed("albania_drinks", { shot:0, ol:0, drink:0, vin:0, vann:0 });
+
+    grid.innerHTML = TYPES.map(t => `
+      <div class="counter" data-key="${t.key}">
+        <button class="counter__minus" data-minus="${t.key}" aria-label="minus">−</button>
+        <div class="counter__emoji">${t.emoji}</div>
+        <div class="counter__num" id="num-${t.key}">0</div>
+        <div class="counter__label">${t.label}</div>
+        <div class="counter__tap">trykk +1</div>
+      </div>`).join("");
+
+    function setNumbers(bumpKey) {
+      let total = 0;
+      TYPES.forEach(t => {
+        const v = drinks[t.key] || 0; total += v;
+        const el = document.getElementById("num-" + t.key);
+        el.textContent = v;
+        if (bumpKey === t.key) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+      });
+      totalEl.textContent = total;
+    }
+    async function push() {
+      Store.set("albania_drinks", drinks);
+      if (DRINK_SYNC) { try { await fetch(`${DRINK_SYNC}/momfies_drinks.json`, { method:"PUT", body: JSON.stringify(drinks) }); } catch(e){} }
+    }
+
+    grid.querySelectorAll(".counter").forEach(card => {
+      card.addEventListener("click", () => { const k = card.dataset.key; drinks[k] = (drinks[k]||0) + 1; setNumbers(k); push(); });
+    });
+    grid.querySelectorAll("[data-minus]").forEach(b => {
+      b.addEventListener("click", (e) => { e.stopPropagation(); const k = b.dataset.minus; drinks[k] = Math.max(0,(drinks[k]||0)-1); setNumbers(); push(); });
+    });
+    document.getElementById("drink-reset").onclick = () => {
+      if (confirmAction("Nullstille hele drikketelleren?")) { drinks = { shot:0,ol:0,drink:0,vin:0,vann:0 }; setNumbers(); push(); toast("Nullstilt 🧼"); }
+    };
+
+    setNumbers();
+  })();
+
+  /* ---------- SPINNEHJUL ---------- */
+  (function () {
+    const wheel = document.getElementById("wheel");
+    const winnerEl = document.getElementById("winner");
+    const css = getComputedStyle(document.documentElement);
+    const PAL = ["--coral","--blue","--mint","--azure","--deep","--sun","--blue","--mint"]
+      .map(v => css.getPropertyValue(v).trim());
+
+    let names = Store.seed("albania_wheel", ["Hanne","Hanna","Ann","Eli","Emma","Marie","Rina"]);
+    let rotation = 0, spinning = false, pending = 0;
+
+    function build() {
+      const n = names.length;
+      wheel.querySelectorAll(".wheel__label").forEach(e => e.remove());
+      if (!n) { wheel.style.background = "var(--foam)"; return; }
+      const seg = 360 / n;
+      wheel.style.background = `conic-gradient(${names.map((_,i)=>`${PAL[i%PAL.length]} ${i*seg}deg ${(i+1)*seg}deg`).join(",")})`;
+      names.forEach((name,i) => {
+        const a = (i*seg + seg/2) * Math.PI/180;
+        const lab = document.createElement("span");
+        lab.className = "wheel__label";
+        lab.style.left = (50 + 34*Math.sin(a)) + "%";
+        lab.style.top  = (50 - 34*Math.cos(a)) + "%";
+        lab.textContent = name;
+        wheel.appendChild(lab);
+      });
+    }
+    function resetRotation() {
+      rotation = 0; wheel.style.transition = "none"; wheel.style.transform = "rotate(0deg)";
+      void wheel.offsetWidth; wheel.style.transition = "";
+    }
+
+    document.getElementById("spin").onclick = () => {
+      if (spinning || !names.length) return;
+      spinning = true; winnerEl.textContent = "Spinner… 🌀";
+      const seg = 360 / names.length;
+      pending = Math.floor(Math.random() * names.length);
+      const center = pending*seg + seg/2;
+      const jitter = (Math.random() - 0.5) * seg * 0.5;
+      const base = Math.ceil((rotation + 1) / 360) * 360;
+      rotation = base + 360*5 + ((360 - center) % 360) + jitter;
+      wheel.style.transform = `rotate(${rotation}deg)`;
+    };
+    wheel.addEventListener("transitionend", () => {
+      if (!spinning) return; spinning = false;
+      winnerEl.innerHTML = `🎉 <b>${esc(names[pending])}</b>`;
+      toast(`${names[pending]} ble valgt! 🎯`);
+    });
+
+    const editor = document.getElementById("names-editor");
+    const area = document.getElementById("names-area");
+    document.getElementById("edit-names").onclick = () => {
+      const open = editor.style.display === "none";
+      editor.style.display = open ? "block" : "none";
+      if (open) area.value = names.join("\n");
+    };
+    document.getElementById("names-save").onclick = () => {
+      const list = area.value.split("\n").map(s => s.trim()).filter(Boolean);
+      if (!list.length) { toast("Skriv minst ett navn 🙂"); return; }
+      names = list; Store.set("albania_wheel", names);
+      resetRotation(); build(); editor.style.display = "none";
+      winnerEl.textContent = "Klar igjen 👇"; toast("Navn oppdatert ✏️");
+    };
+
+    build();
+  })();
+
+  /* ---------- SITATVEGG ---------- */
+  (function () {
+    const wall = document.getElementById("quotes");
+    let quotes = Store.seed("albania_quotes", []);
+    const save = () => Store.set("albania_quotes", quotes);
+
+    function render() {
+      wall.innerHTML = quotes.length
+        ? quotes.map(q => `
+            <div class="note">
+              «${esc(q.text)}»
+              ${q.who ? `<span class="note__who">– ${esc(q.who)}</span>` : ""}
+              <button class="note__del" data-del="${q.id}">slett</button>
+            </div>`).join("")
+        : `<p class="empty">Veggen er tom… enn så lenge 🤭</p>`;
+      wall.querySelectorAll("[data-del]").forEach(b =>
+        b.onclick = () => { quotes = quotes.filter(x => x.id !== b.dataset.del); save(); render(); });
+    }
+    document.getElementById("q-add").onclick = () => {
+      const text = document.getElementById("q-text").value.trim();
+      const who = document.getElementById("q-who").value.trim();
+      if (!text) { toast("Skriv et sitat først ✍️"); return; }
+      quotes.unshift({ id: uid(), text, who }); save(); render();
+      document.getElementById("q-text").value = "";
+      document.getElementById("q-who").value = "";
+      toast("Hengt opp på veggen 📌");
+    };
+    render();
+  })();
+
+  /* ---------- BILDEVEGG ---------- */
+  (function () {
+    const wall = document.getElementById("photowall");
+    wall.className = "photowall";
+    let photos = Store.seed("albania_photos", []);
+    const save = () => Store.set("albania_photos", photos);
+
+    function render() {
+      wall.innerHTML = photos.length
+        ? photos.map(p => `
+            <div class="photo-item">
+              <img src="${p.url}" alt="${esc(p.caption)}" loading="lazy">
+              <div class="photo-item__caption">
+                <span>${esc(p.caption || "")}</span>
+                <button class="photo-item__del" data-del="${p.id}">slett</button>
+              </div>
+            </div>`).join("")
+        : `<p class="empty">Ingen bilder enda — legg til det første! 📸</p>`;
+      wall.querySelectorAll("[data-del]").forEach(b =>
+        b.onclick = () => { photos = photos.filter(x => x.id !== b.dataset.del); save(); render(); });
+    }
+
+    document.getElementById("ph-add").onclick = () => {
+      const file = document.getElementById("ph-file").files[0];
+      const caption = document.getElementById("ph-caption").value.trim();
+      if (!file) { toast("Velg et bilde først 📷"); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        photos.unshift({ id: uid(), url: e.target.result, caption });
+        save(); render();
+        document.getElementById("ph-file").value = "";
+        document.getElementById("ph-caption").value = "";
+        toast("Bilde lagt til! 📸");
+      };
+      reader.readAsDataURL(file);
+    };
+
+    render();
+  })();
+
+  /* ---------- UKEPLAN ---------- */
+  (function () {
+    const body = document.getElementById("plan-body");
+    const DAGER = ["Søndag","Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag"];
+    let plan = Store.seed("albania_plan", {});
+    const save = () => Store.set("albania_plan", plan);
+
+    function days() {
+      const out = [];
+      let d = new Date(GANG.trip.start + "T00:00:00");
+      const end = new Date(GANG.trip.end + "T00:00:00");
+      let guard = 0;
+      while (d <= end && guard < 60) { out.push(new Date(d)); d.setDate(d.getDate()+1); guard++; }
+      return out;
+    }
+    function isoOf(dt) {
+      return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
+    }
+
+    body.innerHTML = days().map(dt => {
+      const iso = isoOf(dt);
+      const p = plan[iso] || {};
+      return `<tr data-iso="${iso}">
+        <td><div class="plan__day"><b>${DAGER[dt.getDay()]}</b><span>${dt.getDate()}.${dt.getMonth()+1}</span></div></td>
+        <td><input class="input tema" data-f="tema"  value="${esc(p.tema||"")}"  placeholder=""></td>
+        <td><input class="input"      data-f="mat"   value="${esc(p.mat||"")}"   placeholder=""></td>
+        <td><input class="input"      data-f="notat" value="${esc(p.notat||"")}" placeholder=""></td>
+      </tr>`;
+    }).join("");
+
+    body.querySelectorAll("input").forEach(inp => {
+      inp.addEventListener("input", () => {
+        const iso = inp.closest("tr").dataset.iso;
+        if (!plan[iso]) plan[iso] = {};
+        plan[iso][inp.dataset.f] = inp.value;
+        save();
+      });
+    });
+  })();
+
+  /* ---------- LOGGEBOK ---------- */
+  (function () {
+    const container = document.getElementById("logbook");
+    container.className = "logbook";
+    const modal = document.getElementById("log-modal");
+    const DAGER = ["Søndag","Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag"];
+    let log = Store.seed("albania_log", {});
+    const save = () => Store.set("albania_log", log);
+    let currentIso = null;
+
+    function days() {
+      const out = [];
+      let d = new Date(GANG.trip.start + "T00:00:00");
+      const end = new Date(GANG.trip.end + "T00:00:00");
+      let guard = 0;
+      while (d <= end && guard < 60) { out.push(new Date(d)); d.setDate(d.getDate()+1); guard++; }
+      return out;
+    }
+    function isoOf(dt) {
+      return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
+    }
+
+    function renderDays() {
+      const list = days();
+      container.innerHTML = list.map((dt, i) => {
+        const iso = isoOf(dt);
+        const hasContent = log[iso] && (log[iso].text || (log[iso].imgs && log[iso].imgs.length));
+        return `
+          <div class="log-day" data-iso="${iso}" data-num="${i+1}" data-label="${DAGER[dt.getDay()]} ${dt.getDate()}. juni">
+            ${hasContent ? `<div class="log-day__has" title="Har innhold"></div>` : ""}
+            <div class="log-day__num">${i+1}</div>
+            <div class="log-day__name">${DAGER[dt.getDay()]}</div>
+            <div class="log-day__date">${dt.getDate()}.${dt.getMonth()+1}</div>
+          </div>`;
+      }).join("");
+      container.querySelectorAll(".log-day").forEach(card =>
+        card.onclick = () => openDay(card.dataset.iso, card.dataset.num, card.dataset.label));
+    }
+
+    function openDay(iso, num, label) {
+      currentIso = iso;
+      document.getElementById("log-eyebrow").textContent = `Dag ${num}`;
+      document.getElementById("log-title").textContent = label;
+      document.getElementById("log-text").value = log[iso]?.text || "";
+      document.getElementById("log-file").value = "";
+      renderGallery();
+      modal.classList.add("is-open");
+      setTimeout(() => document.getElementById("log-text").focus(), 50);
+    }
+
+    function renderGallery() {
+      const imgs = log[currentIso]?.imgs || [];
+      const g = document.getElementById("log-gallery");
+      g.className = "log-gallery";
+      g.innerHTML = imgs.length
+        ? imgs.map((src, i) => `
+            <div class="log-gallery__item">
+              <img src="${src}" alt="bilde ${i+1}">
+              <button class="log-gallery__del" data-idx="${i}">✕</button>
+            </div>`).join("")
+        : `<p class="muted" style="font-size:.9rem">Ingen bilder enda.</p>`;
+      g.querySelectorAll("[data-idx]").forEach(b =>
+        b.onclick = () => {
+          log[currentIso].imgs.splice(+b.dataset.idx, 1);
+          save(); renderGallery(); renderDays();
+        });
+    }
+
+    document.getElementById("log-text").addEventListener("input", () => {
+      if (!log[currentIso]) log[currentIso] = { text: "", imgs: [] };
+      log[currentIso].text = document.getElementById("log-text").value;
+      save(); renderDays();
+    });
+
+    document.getElementById("log-img-add").onclick = () => {
+      const file = document.getElementById("log-file").files[0];
+      if (!file) { toast("Velg et bilde først 📷"); return; }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (!log[currentIso]) log[currentIso] = { text: "", imgs: [] };
+        if (!log[currentIso].imgs) log[currentIso].imgs = [];
+        log[currentIso].imgs.push(e.target.result);
+        save(); renderGallery(); renderDays();
+        document.getElementById("log-file").value = "";
+        toast("Bilde lagt til! 📸");
+      };
+      reader.readAsDataURL(file);
+    };
+
+    document.getElementById("log-close").onclick = () => modal.classList.remove("is-open");
+    modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("is-open"); });
+
+    renderDays();
+  })();
+  </script>
+</body>
+</html>

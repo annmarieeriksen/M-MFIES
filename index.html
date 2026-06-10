@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOMFIES ⚓ Forsiden</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Outfit:wght@300..800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero wrap">
+    <div class="hero__grid">
+      <div>
+        <span class="hero__badge">📍gæng side</span>
+        <h1>welcome welcome<br>to the cløb,<br><em>jenter.</em></h1>
+        <p class="lead">🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺</p>
+        <div class="hero__cta">
+          <a class="btn btn--coral" href="turer.html">🧳 Se turene</a>
+          <a class="btn btn--ghost" href="hvem.html">👯 Møt gjengen</a>
+        </div>
+      </div>
+
+      <!-- NESTE EVENTYR -->
+      <a class="event" id="event" href="turer.html">
+        <span class="event__pin">neste eventyr!</span>
+        <span class="eyebrow" style="color:var(--sky)">Pakk kofferten</span>
+        <div class="event__where" id="ev-where">Albania</div>
+        <div class="event__when" id="ev-when">22.–29. juni</div>
+        <div class="event__count" id="countdown"></div>
+        <p style="margin-top:14px;font-size:.9rem;opacity:.85">Trykk for detaljer &amp; bildegalleri →</p>
+      </a>
+    </div>
+  </section>
+
+  <svg class="wave" viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden="true">
+    <path fill="currentColor" d="M0,24 C240,48 360,0 720,16 C1080,32 1200,4 1440,24 L1440,48 L0,48 Z"></path>
+  </svg>
+
+  <!-- KALENDER -->
+  <section class="section" style="background:var(--deep)">
+    <div class="wrap">
+      <div class="card" style="background:var(--paper)">
+        <div class="cal__head">
+          <div>
+            <span class="eyebrow">Hva skjer</span>
+            <div class="cal__title" id="cal-title">Måned</div>
+          </div>
+          <div class="cal__nav">
+            <button class="btn btn--ghost btn--icon" id="cal-prev" aria-label="Forrige måned">‹</button>
+            <button class="btn btn--ghost btn--sm" id="cal-today">I dag</button>
+            <button class="btn btn--ghost btn--icon" id="cal-next" aria-label="Neste måned">›</button>
+          </div>
+        </div>
+        <div class="cal__grid" id="cal-grid"></div>
+        <p class="cal__hint">💡 Trykk på en dato for å legge til noe (avreise, fest, bursdag…). Alt lagres lokalt.</p>
+      </div>
+    </div>
+  </section>
+
+  <svg class="wave" viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden="true" style="transform:scaleY(-1);color:var(--deep)">
+    <path fill="currentColor" d="M0,24 C240,48 360,0 720,16 C1080,32 1200,4 1440,24 L1440,48 L0,48 Z"></path>
+  </svg>
+
+  <!-- NAVIGASJON -->
+  <section class="section wrap">
+    <span class="eyebrow"></span>
+    <h2 style="font-size:clamp(2rem,5vw,3rem);margin:4px 0 18px">ting og tang</h2>
+    <div class="tiles">
+      <a class="tile" href="albania.html" style="background:linear-gradient(150deg,var(--sky),var(--foam))"><div class="tile__icon">🏝️</div><h3>Albaniaaaaa</h3><p>...</p></a>
+      <a class="tile" href="hvem.html"><div class="tile__icon">👯</div><h3>Hvem er vi?</h3><p>Møt alle </p></a>
+      <a class="tile" href="turer.html"><div class="tile__icon">🧳</div><h3>Turer</h3></a>
+      <a class="tile" href="drikkeleker.html"><div class="tile__icon">🍹</div><h3>Drikkeleker</h3><p>Regelboka</p></a>
+    </div>
+  </section>
+
+  <!-- MODAL: legg til kalenderhendelse -->
+  <div class="modal" id="day-modal">
+    <div class="modal__box" style="max-width:460px">
+      <button class="modal__close" id="day-close" aria-label="Lukk">✕</button>
+      <span class="eyebrow">Ny hendelse</span>
+      <h2 id="day-title" style="font-size:1.8rem;margin:4px 0 16px">Dato</h2>
+      <div class="field">
+        <label for="ev-input">Hva skjer?</label>
+        <input class="input" id="ev-input" placeholder="F.eks. Avreise Albania ✈️" maxlength="60">
+      </div>
+      <button class="btn btn--coral" id="ev-add">Legg til</button>
+      <div class="stack mt" id="day-list" style="gap:8px"></div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+  <script>
+  /* ---------- NEDTELLING TIL NESTE TUR ---------- */
+  (function () {
+    document.getElementById("ev-where").textContent = GANG.trip.title;
+    document.getElementById("event").setAttribute("href", GANG.trip.href);
+    const box = document.getElementById("countdown");
+    const target = new Date(GANG.trip.start + "T00:00:00");
+
+    function tick() {
+      const now = new Date();
+      let diff = Math.floor((target - now) / 1000);
+      if (diff <= 0) { box.innerHTML = `<div class="count-box" style="min-width:auto;padding:8px 18px"><b>🎉 Vi er på tur!</b></div>`; return; }
+      const d = Math.floor(diff / 86400); diff -= d * 86400;
+      const h = Math.floor(diff / 3600);  diff -= h * 3600;
+      const m = Math.floor(diff / 60);    const s = diff - m * 60;
+      const parts = [["dager", d], ["timer", h], ["min", m], ["sek", s]];
+      box.innerHTML = parts.map(([l, v]) =>
+        `<div class="count-box"><b>${String(v).padStart(2, "0")}</b><span>${l}</span></div>`).join("");
+    }
+    tick(); setInterval(tick, 1000);
+  })();
+
+  /* ---------- KALENDER ---------- */
+  (function () {
+    const grid  = document.getElementById("cal-grid");
+    const title = document.getElementById("cal-title");
+    const modal = document.getElementById("day-modal");
+    const dayTitle = document.getElementById("day-title");
+    const dayList  = document.getElementById("day-list");
+    const evInput  = document.getElementById("ev-input");
+
+    const MND = ["januar","februar","mars","april","mai","juni","juli","august","september","oktober","november","desember"];
+    const DOW = ["man","tir","ons","tor","fre","lør","søn"];
+
+    let events = Store.get("cal_events", {});   // { "YYYY-MM-DD": [ "tekst", ... ] }
+    let selectedIso = null;
+    const today = new Date();
+    let view = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    // marker trip-dager
+    function isInTrip(iso) {
+      return iso >= GANG.trip.start && iso <= GANG.trip.end;
+    }
+    function iso(y, m, d) {
+      return `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    }
+
+    function render() {
+      const y = view.getFullYear(), m = view.getMonth();
+      title.textContent = `${MND[m]} ${y}`;
+      grid.innerHTML = "";
+      DOW.forEach(d => {
+        const h = document.createElement("div"); h.className = "cal__dow"; h.textContent = d; grid.appendChild(h);
+      });
+      // mandag = 0
+      let firstDay = new Date(y, m, 1).getDay(); firstDay = (firstDay + 6) % 7;
+      const daysInMonth = new Date(y, m+1, 0).getDate();
+      for (let i = 0; i < firstDay; i++) {
+        const e = document.createElement("div"); e.className = "cal__cell is-empty"; grid.appendChild(e);
+      }
+      const todayIso = isoToday();
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateIso = iso(y, m, d);
+        const cell = document.createElement("div");
+        cell.className = "cal__cell";
+        if (dateIso === todayIso) cell.classList.add("is-today");
+        if (isInTrip(dateIso)) cell.classList.add("in-trip");
+        cell.innerHTML = `<span class="cal__date">${d}</span>`;
+        if (isInTrip(dateIso)) {
+          if (dateIso === GANG.trip.start)
+            cell.innerHTML += `<span class="cal__ev ev--trip">✈️ ${esc(GANG.trip.title)}</span>`;
+          else cell.innerHTML += `<span class="cal__ev ev--trip">🏖️</span>`;
+        }
+        (events[dateIso] || []).forEach(t => {
+          cell.innerHTML += `<span class="cal__ev" title="${esc(t)}">${esc(t)}</span>`;
+        });
+        cell.addEventListener("click", () => openDay(dateIso));
+        grid.appendChild(cell);
+      }
+    }
+
+    function openDay(dateIso) {
+      selectedIso = dateIso;
+      dayTitle.textContent = formatDateNo(dateIso);
+      evInput.value = "";
+      renderDayList();
+      modal.classList.add("is-open");
+      setTimeout(() => evInput.focus(), 50);
+    }
+    function renderDayList() {
+      const list = events[selectedIso] || [];
+      const tripNote = isInTrip(selectedIso)
+        ? `<div class="list-item" style="padding:10px 14px;background:var(--sky)">✈️ <b>${esc(GANG.trip.title)}-tur</b> denne dagen</div>` : "";
+      dayList.innerHTML = tripNote + (list.length
+        ? list.map((t, i) => `
+          <div class="list-item" style="padding:10px 14px">
+            <div class="list-item__row">
+              <span>📌 ${esc(t)}</span>
+              <button class="btn btn--sm btn--coral" data-del="${i}">Slett</button>
+            </div>
+          </div>`).join("")
+        : (tripNote ? "" : `<p class="muted center">Ingenting planlagt enda.</p>`));
+      dayList.querySelectorAll("[data-del]").forEach(b => {
+        b.addEventListener("click", () => {
+          events[selectedIso].splice(+b.dataset.del, 1);
+          if (!events[selectedIso].length) delete events[selectedIso];
+          Store.set("cal_events", events); renderDayList(); render();
+        });
+      });
+    }
+    function addEvent() {
+      const v = evInput.value.trim();
+      if (!v) return;
+      if (!events[selectedIso]) events[selectedIso] = [];
+      events[selectedIso].push(v);
+      Store.set("cal_events", events);
+      evInput.value = ""; renderDayList(); render();
+      toast("Lagt til i kalenderen! 📅");
+    }
+
+    document.getElementById("cal-prev").onclick = () => { view.setMonth(view.getMonth()-1); render(); };
+    document.getElementById("cal-next").onclick = () => { view.setMonth(view.getMonth()+1); render(); };
+    document.getElementById("cal-today").onclick = () => { view = new Date(today.getFullYear(), today.getMonth(), 1); render(); };
+    document.getElementById("ev-add").onclick = addEvent;
+    evInput.addEventListener("keydown", e => { if (e.key === "Enter") addEvent(); });
+    document.getElementById("day-close").onclick = () => modal.classList.remove("is-open");
+    modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("is-open"); });
+
+    render();
+  })();
+  </script>
+</body>
+</html>

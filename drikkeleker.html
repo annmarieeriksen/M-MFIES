@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drikkeleker 🍹 MOMFIES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Outfit:wght@300..800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .songs { display: grid; gap: 14px; }
+    .song-card {
+      background: var(--paper); border: var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow-sm); overflow: hidden;
+    }
+    .song-card__header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 20px; cursor: pointer;
+      transition: background .15s;
+    }
+    .song-card__header:hover { background: var(--foam); }
+    .song-card__num {
+      font-family: var(--font-display); font-size: 1.8rem;
+      color: var(--azure); width: 32px; flex: none; text-align: center;
+    }
+    .song-card__info { flex: 1; min-width: 0; }
+    .song-card__title { font-weight: 800; font-size: 1.1rem; }
+    .song-card__artist { color: #41566b; font-size: .9rem; }
+    .song-card__arrow { font-size: 1.2rem; transition: transform .2s; flex: none; }
+    .song-card.is-open .song-card__arrow { transform: rotate(180deg); }
+    .song-card__spotify {
+      background: #1DB954; color: #fff; border: 2px solid var(--ink);
+      border-radius: 999px; padding: 6px 14px; font-weight: 700; font-size: .85rem;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px; flex: none;
+    }
+    .song-card__spotify:hover { background: #17a349; }
+    .song-card__body { display: none; border-top: var(--border); padding: 0; }
+    .song-card.is-open .song-card__body { display: block; }
+    .spotify-embed { padding: 12px 20px 0; }
+    .lyrics-table { width: 100%; border-collapse: collapse; }
+    .lyrics-table th {
+      text-align: left; font-family: var(--font-body); font-weight: 800;
+      font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--blue); padding: 12px 20px 8px; border-bottom: 2px solid var(--foam);
+    }
+    .lyrics-table td {
+      padding: 10px 20px; vertical-align: top;
+      border-bottom: 1px solid var(--foam); font-size: 1rem;
+    }
+    .lyrics-table tr:last-child td { border-bottom: none; }
+    .lyrics-table td:first-child {
+      font-family: var(--font-hand); font-size: 1.25rem;
+      color: var(--deep); width: 40%; border-right: 2px solid var(--foam);
+    }
+    .lyrics-table td:last-child { font-style: italic; color: var(--ink); white-space: pre-line; }
+    .lyrics-table tr.is-drink td:first-child { color: var(--coral); font-weight: 700; }
+    .lyrics-table tr.is-drink td { background: #fff6f4; }
+  </style>
+</head>
+<body>
+  <section class="section wrap">
+    <div class="page-head">
+      <span class="eyebrow">Sangleken</span>
+      <h1>Drikke<em>leker</em></h1>
+    </div>
+    <div class="songs" id="songs"></div>
+  </section>
+
+  <script src="main.js"></script>
+  <script>
+  const SONGS = [
+    {
+      title: "Hot & Sexy",
+      artist: "Zara Larsson, Tyla",
+      spotifyId: "56XRMsd36CU26THxIrVRJG",
+      lines: [
+        { who: "ALLE", lyric: "Beautiful, fly, hot, and sexy (woo)\nBeautiful, fly and hot, and sexy", drink: false },
+        { who: "Blondiner", lyric: "I'm that girl\nAll the night, all the day\nGot these boys sour, lemonade\nMy girls in the back of the Escalade (uh)", drink: false },
+        { who: "Har med en tannbørst", lyric: "\"PUSSPUSS97\" on the number plate (mwah)\n\"PUSSPUSS97\" on the number plate (mwah)\n\"PUSSPUSS97\" on the number plate (yeah)", drink: false },
+        { who: "Blir solbrent", lyric: "She got a bad girl on her left\nShe got a bad girl on her right (ooh, she tight)\nI got a bad girl sitting right next to me\nRight here on the passenger side", drink: false },
+        { who: "Brunetter", lyric: "They ride for me, I ride for them\nE-e-everywhere we go, it's a main event\nSo take a picture for the camera-ra (beautiful, fly)", drink: false },
+        { who: "Gledet seg til turen", lyric: "Oh, somebody come get her, 'cause we're eating just like dinner\nGot their eyes on us, 'cause we're (hot, and sexy)", drink: false },
+        { who: "Fått en smørboks kastet i trynet", lyric: "Ah, dropping glitter, designer on our figures\nGot their eyes on us, 'cause we're (hot, and sexy)", drink: false },
+        { who: "Vært i et skur..", lyric: "(Yeah) yeah, we lookin' good\nBut we ain't up to that night\nIt could be November, but we still gon' give you summertime\nDo it like we should, oh-oh (uh)", drink: false },
+        { who: "Ble betatt på nyttårsaften", lyric: "Get in the car, girl, we gon' be late\n\"PUSSPUSS97\" on the number plate\n\"PUSSPUSS97\" on the number plate (uh)", drink: false },
+        { who: "jigga på leir", lyric: "She got a bad girl on her left (woo)\nShe got a bad girl on her right (ooh, she tight)\nI got a bad girl sitting right next to me (yeah)\nRight here on the passenger side", drink: false },
+        { who: "Puster oksyge akk nå", lyric: "They ride for me, I ride for them\nE-e-everywhere we go, it's a main event\nSo take a picture for the camera-ra\nMe and my girls are", drink: false },
+        { who: "Er i albanua", lyric: "Beautiful, fly, hot, and sexy (uh)\nBeautiful, fly, hot, and sexy\nI'm that girl", drink: false },
+        { who: "Blitt med ons på legevakta", lyric: "I just wanna wear what I want, get high, get out, get by, get drunk\nWanna party all night long, got a fuckhead boy tryna touch my junk", drink: false },
+        { who: "Mista en tann på russebuss", lyric: "I just wanna wear what I want, get high, get out, get by, get drunk (puss puss)\nWanna party all night long, got a fuckhead boy tryna touch my, touch my", drink: false },
+        { who: "Hvis du er 24", lyric: "Tuh-tuh-tuh, we're sexy\nTuh-tuh-tuh, we're sexy\nTuh-tuh-tuh, we're sexy\nPictu-pictu-picture for the camera", drink: false },
+        { who: "Hvis du blir 24 i år", lyric: "oh, yeah\nlet a girl, let a girl live\ncan you let her, can you let her live?", drink: false },
+        { who: "Eier en hund", lyric: "Tale as old as time\nCrime on womankind, scared to go outside\nIt still blows my mind how we just let it slide", drink: false },
+        { who: "Hvis du er en baddie", lyric: "I'm done feeling like a prey, watching my back every day\nMust say, it's getting insane, getting told I need to change\nThere's boys that need to be raised", drink: false },
+        { who: "ALLE", lyric: "Can I be a girl? Can I, can I, can I just live?\nCan I just live?\nLet a girl, let a girl, let a girl be hot and sexy.", drink: false },
+      ]
+    },
+    {
+      title: "Danza Kuduro",
+      artist: "Don Omar, Lucenzo",
+      spotifyId: "6DXLO8LndZMVOHM0wNbpzg",
+      lines: [
+  { who: "Ann", lyric: "Balança, que é uma loucura, morena, vem a meu lado\nNinguém vai ficar parado, quero ver mexer Kuduro", drink: false },
+  { who: "EMMA", lyric: "Balança, que é uma loucura, morena, vem a meu lado\nNinguém vai ficar parado, oh-oh-oh", drink: false },
+  { who: "MARIE", lyric: "Oi, oi, oi, oi, oi, oi, oi\nÉ pa quebrar Kuduro, vamos dançar Kuduro", drink: false },
+  { who: "ELI", lyric: "Oi, oi, oi, oi, oi, oi, oi\nSeja morena ou loira, vem balançar Kuduro\nOi, oi, oi", drink: false },
+  { who: "RINA", lyric: "No te canses ahora, que esto solo empieza\nMueve la cabeza, Danza Kuduro", drink: false },
+  { who: "HANNE", lyric: "Danza Kuduro, Danza Kuduro\nDanza Kuduro, Danza Kuduro", drink: false },
+  { who: "HANNA", lyric: "Danza Kuduro", drink: false },
+  { who: "ANN", lyric: "Danza Kuduro", drink: false },
+  { who: "EMMA", lyric: "La mano arriba, cintura sola\nDa media vuelta, Danza Kuduro\nNo te canses ahora, que esto solo empieza\nMueve la cabeza, oi, oi, oi", drink: false },
+  { who: "MARIE", lyric: "Oi, oi, oi, Danza Kuduro", drink: false },
+  { who: "ELI", lyric: "La mano arriba, cintura sola\nDa media vuelta, Danza Kuduro\nNo te canses ahora, que esto solo empieza\nMueve la cabeza, Danza Kuduro", drink: false },
+  { who: "RINA", lyric: "Danza Kuduro, Danza Kuduro\nDanza Kuduro, Danza Kuduro", drink: false },
+  { who: "HANNE", lyric: "Danza Kuduro", drink: false },
+  { who: "HANNA", lyric: "Oi, oi, oi", drink: false },
+  { who: "ALLE", lyric: "Danza Kuduro", drink: false },
+  { who: "ALLE", lyric: "Mueve la cabeza, Kuduro, oi, oi, oi", drink: false },
+]
+    },
+    {
+      title: "Intimidated",
+      artist: "KAYTRANADA, H.E.R.",
+      spotifyId: "0dFdGPVLs3k0z9ezYWZzUa",
+      lines: [
+  { who: "Hvis du har tørket ræv", lyric: "Open water (water)\nJust what you wanted (wanted, just what you wanted)\nSo don't leave me drowning (drowning)\nDon't let me (let me) down", drink: false },
+  { who: "hvis du har vært en belieber", lyric: "Don't\nDon't hold it back like that\nJust pull me closer, baby\nOh, no, don't", drink: false },
+  { who: "Hvis du har vært sammen med en på buss", lyric: "Let's make the most of this before it's over\nOver, don't", drink: false },
+  { who: "Hvis du har gått på krykker i et jævla år", lyric: "Time\nDon't wanna waste the feel (feel)\nLike we could make it real (real)\nDon't run away when you could be lovin' me", drink: false },
+  { who: "Hvis du vurderer å starte onlyfans at this point", lyric: "Signs (signs), too busy reading minds (minds)\nAlready made it here (here)\nDon't overthink when you could be lovin' me", drink: false },
+  { who: "Hvis du er sammen med en 03", lyric: "Get me started\nBefore this started (started)\nI could be giving someone all of me\nTotally (totally)\nTotally, ooh", drink: false },
+  { who: "Hvis du chugger småsure som om det skulle vært vann", lyric: "Don't\nDon't hold it back like that\nJust pull me closer, baby (baby)\nSo better make the most of this before it's over\nOver, so", drink: false },
+  { who: "har bursdag på 17. mai", lyric: "Time (time)\nDon't wanna waste the feel (feel)\nLike we could make it real (real)\nDon't run away when you could be lovin' me", drink: false },
+  { who: "skriv inn her", lyric: "Signs (signs), too busy reading minds (minds)\nAlready made it here (here)\nDon't overthink when you could be lovin' me", drink: false },
+  { who: "skriv inn her", lyric: "Play it safe 'case I don't feel the same\nOh, end of the day (oh, end of the day)\nWon't face it\nYou too afraid to say you're too intimidated", drink: false },
+]
+    },
+    {
+      title: "We Are One (Ole Ola)",
+      artist: "Pitbull, Jennifer Lopez",
+      spotifyId: "1PCvKFPWnTXAe2oaReVUcr",
+      lines: [
+  { who: "skriv inn her", lyric: "Put your flags up in the sky\nAnd wave 'em side to side\nShow the world where you're from\nShow the world we are one", drink: false },
+  { who: "skriv inn her", lyric: "Olé, olé, olé, olá\nOlé, olé, olé, olá\nOlé, olé, olé, olá\nOlé, olé, olé, olá", drink: false },
+  { who: "skriv inn her", lyric: "When the goin' gets tough\nThe tough keep goin'\nOne love, one life\nOne world, one fight", drink: false },
+  { who: "skriv inn her", lyric: "Whole world, one night\nOne place, Brazil\nEverybody, put your flags in the sky and do what you feel", drink: false },
+  { who: "skriv inn her", lyric: "It's your world, my world, our world today\nAnd we invite the whole world, whole world to play", drink: false },
+  { who: "skriv inn her", lyric: "Es mi mundo, tu mundo\nEl mundo de nosotros\nInvitamos a to' el mundo a jugar con nosotros", drink: false },
+  { who: "skriv inn her", lyric: "Put your flags up in the sky\nAnd wave 'em side to side\nShow the world where you're from\nShow the world we are one", drink: false },
+  { who: "skriv inn her", lyric: "Olé, olé, olé, olá\nOlé, olé, olé, olá\nOlé, olé, olé, olá\nOlé, olé, olé, olá", drink: false },
+  { who: "skriv inn her", lyric: "One night, watch the world unite\nTwo sides, one fight, and a million eyes\nFull heart's gonna work so hard\nShoot for the stars, fists raised up towards the sky", drink: false },
+  { who: "skriv inn her", lyric: "Tonight, watch the world unite\nFor the fight, fight, fight\nOne night, watch the world unite\nTwo sides, one fight and a million eyes", drink: false },
+  { who: "skriv inn her", lyric: "Hey, hey, hey, força, força, come on sing with me\nHey, hey, hey, allez, allez, come shout it out with me\nHey, hey, hey, come on now\nHey, hey, hey, hey, hey", drink: false },
+  { who: "skriv inn her", lyric: "Put your flags up in the sky\nAnd wave 'em side to side\nShow the world where you're from\nShow the world we are one", drink: false },
+  { who: "skriv inn her", lyric: "Olé, olé, olé, olá\nOlé, olé, olé, olá\nOlé, olé, olé, olá\nOlé, olé, olé, olá", drink: false },
+  { who: "skriv inn her", lyric: "É meu, é seu, hoje é tudo nosso\nQuando eu chamo o mundo inteiro pra jogar, é pra mostrar que eu posso\nTorcer, chorar, sorrir, gritar\nNão importa o resultado, vamo' extravasar", drink: false },
+  { who: "skriv inn her", lyric: "Put your flags up in the sky\nAnd wave 'em side to side\nShow the world where you're from\nShow the world we are one", drink: false },
+  { who: "skriv inn her", lyric: "Olé, olé, olé, olá\nOlé, olé, olé, olá\nOlé, olé, olé, olá\nOlé, olé, olé, olá", drink: false },
+]
+    },
+    {
+      title: "Me Gustas Tu",
+      artist: "Manu Chao",
+      spotifyId: "6b37xrsNCWYIUphFBazqD6",
+      lines: [
+  { who: "skriv inn her", lyric: "¿Qué horas son, mi corazón?\nDoce de la noche en La Habana, Cuba\nOnce de la noche en San Salvador\nOnce de la noche en Managua, Nicaragua", drink: false },
+  { who: "skriv inn her", lyric: "Me gustan los aviones, me gustas tú\nMe gusta viajar, me gustas tú\nMe gusta la mañana, me gustas tú\nMe gusta el viento, me gustas tú", drink: false },
+  { who: "skriv inn her", lyric: "Me gusta soñar, me gustas tú\nMe gusta la mar, me gustas tú", drink: false },
+  { who: "skriv inn her", lyric: "¿Qué voy a hacer? Je ne sais pas\n¿Qué voy a hacer? Je ne sais plus\n¿Qué voy a hacer? Je suis perdu\n¿Qué horas son, mi corazón?", drink: false },
+  { who: "skriv inn her", lyric: "Me gusta la moto, me gustas tú\nMe gusta correr, me gustas tú\nMe gusta la lluvia, me gustas tú\nMe gusta volver, me gustas tú", drink: false },
+  { who: "skriv inn her", lyric: "Me gusta marihuana, me gustas tú\nMe gusta colombiana, me gustas tú\nMe gusta la montaña, me gustas tú\nMe gusta la noche, me gustas tú", drink: false },
+  { who: "skriv inn her", lyric: "¿Qué voy a hacer? Je ne sais pas\n¿Qué voy a hacer? Je ne sais plus\n¿Qué voy a hacer? Je suis perdu\n¿Qué horas son, mi corazón?", drink: false },
+  { who: "skriv inn her", lyric: "Me gusta la cena, me gustas tú\nMe gusta la vecina, me gustas tú\nMe gusta su cocina, me gustas tú\nMe gusta camelar, me gustas tú", drink: false },
+  { who: "skriv inn her", lyric: "Me gusta la guitarra, me gustas tú\nMe gusta el reggae, me gustas tú", drink: false },
+  { who: "skriv inn her", lyric: "¿Qué voy a hacer? Je ne sais pas\n¿Qué voy a hacer? Je ne sais plus\n¿Qué voy a hacer? Je suis perdu\n¿Qué horas son, mi corazón?", drink: false },
+  { who: "skriv inn her", lyric: "Me gusta la canela, me gustas tú\nMe gusta el fuego, me gustas tú\nMe gusta menear, me gustas tú\nMe gusta La Coruña, me gustas tú", drink: false },
+  { who: "skriv inn her", lyric: "Me gusta Malasaña, me gustas tú\nMe gusta la castaña, me gustas tú\nMe gusta Guatemala, me gustas tú", drink: false },
+  { who: "skriv inn her", lyric: "¿Qué voy a hacer? Je ne sais pas\n¿Qué voy a hacer? Je ne sais plus\n¿Qué voy a hacer? Je suis perdu\n¿Qué horas son, mi corazón?", drink: false },
+  { who: "skriv inn her", lyric: "A la bin, a la ban, a la bin, bon, ban\nA la bin, a la ban, a la bin, bon, ban\nObladí, obladá, obladí, da, da", drink: false },
+  { who: "skriv inn her", lyric: "Radio Reloj, cinco de la mañana\nNo todo lo que es oro brilla\nRemedio chino e infalible", drink: false },
+]
+    },
+    {
+      title: "Hotel Room Service",
+      artist: "Pitbull",
+      spotifyId: "6Rb0ptOEjBjPPQUlQtQGbL",
+      lines: [
+  { who: "skriv inn her", lyric: "Meet me at the hotel room\nMeet me at the hotel room\nMeet me at the hotel room\nMeet me at the hotel room", drink: false },
+  { who: "skriv inn her", lyric: "Forget about your boyfriend\nAnd meet me at the hotel room\nYou can bring your girlfriends\nAnd meet me at the hotel room", drink: false },
+  { who: "skriv inn her", lyric: "We at the hotel, motel, Holiday Inn\nWe at the hotel, motel, Holiday Inn\nWe at the hotel, motel, Holiday Inn\nWe at the hotel, motel, Holiday Inn", drink: false },
+  { who: "skriv inn her", lyric: "She like that freaky stuff\nThat kinky stuff, you nasty\nBut I like your type\nBring your girls, just whatever the night", drink: false },
+  { who: "skriv inn her", lyric: "Your man just left, I'm the plumber tonight\nI'll check yo pipes, oh, you the healthy type\nWell, here goes some egg whites", drink: false },
+  { who: "skriv inn her", lyric: "Now gimme that sweet\nThat nasty, that Gucci stuff\nLet me tell you what we gon' do", drink: false },
+  { who: "skriv inn her", lyric: "Two plus two, I'm gon' undress you\nThen we're gonna go three and three\nYou gon' undress me\nThen we're gonna go four and four\nWe gon' freak some more, but first", drink: false },
+  { who: "skriv inn her", lyric: "Forget about your boyfriend\nAnd meet me at the hotel room\nYou can bring your girlfriends\nAnd meet me at the hotel room", drink: false },
+  { who: "skriv inn her", lyric: "We at the hotel, motel, Holiday Inn\nWe at the hotel, motel, Holiday Inn\nWe at the hotel, motel, Holiday Inn\nWe at the hotel, motel, Holiday Inn", drink: false },
+  { who: "skriv inn her", lyric: "Afterparty in hotel lobby\nThen we off to the room, like vroom\nPut them fingers in you mouth, or open up you blouse\nAnd pull that g-string down south", drink: false },
+  { who: "skriv inn her", lyric: "Ooh, okay shawty, one's company\nTwo's a crowd, and three's a party\nYour girl ain't with it, I got somebody\nAnd by nature, she's naughty", drink: false },
+  { who: "skriv inn her", lyric: "Now gimme that sweet\nThat nasty, that Gucci stuff\nLet me tell you what we gon' do\nTwo plus two, I'm gon' undress you\nThen we're gonna go three and three\nWe gon' freak some more, but first", drink: false },
+  { who: "skriv inn her", lyric: "Forget about your boyfriend\nAnd meet me at the hotel room\nYou can bring your girlfriends\nAnd meet me at the hotel room", drink: false },
+  { who: "skriv inn her", lyric: "We at the hotel, motel, Holiday Inn\nWe at the hotel, motel, Holiday Inn\nWe at the hotel, motel, Holiday Inn\nWe at the hotel, motel, Holiday Inn", drink: false },
+  { who: "skriv inn her", lyric: "Mujeres\nJenny, oye que bola\nYamile, oye que bola\nRoslin, oye que bola\nZulema, oye que bola", drink: false },
+  { who: "skriv inn her", lyric: "Cristina, oye que bola\nCarolina, oye que bola\nSofia, oye que bola\nEstefany, oye que bola\nDale, dale, dale", drink: false },
+]
+    }
+  ];
+
+  document.getElementById("songs").innerHTML = SONGS.map((s, i) => `
+    <div class="song-card" id="sc-${i}">
+      <div class="song-card__header" onclick="toggle(${i})">
+        <div class="song-card__num">${i + 1}</div>
+        <div class="song-card__info">
+          <div class="song-card__title">${esc(s.title)}</div>
+          <div class="song-card__artist">${esc(s.artist)}</div>
+        </div>
+        <button class="song-card__spotify" onclick="event.stopPropagation(); togglePlayer(${i})">
+          ▶ Spill
+        </button>
+        <span class="song-card__arrow">▾</span>
+      </div>
+      <div class="song-card__body">
+        <div class="spotify-embed" id="player-${i}" style="display:none">
+          <iframe style="border-radius:12px"
+            src="https://open.spotify.com/embed/track/${s.spotifyId}?utm_source=generator&theme=0"
+            width="100%" height="80" frameborder="0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy">
+          </iframe>
+        </div>
+        <table class="lyrics-table">
+          <thead><tr><th>Hvem</th><th>Sangtekst</th></tr></thead>
+          <tbody>
+            ${s.lines.map(l => `
+              <tr class="${l.drink ? "is-drink" : ""}">
+                <td>${esc(l.who)}</td>
+                <td>${esc(l.lyric)}</td>
+              </tr>`).join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>`).join("");
+
+  function toggle(i) {
+    document.getElementById("sc-" + i).classList.toggle("is-open");
+  }
+
+  function togglePlayer(i) {
+    const p = document.getElementById("player-" + i);
+    p.style.display = p.style.display === "none" ? "block" : "none";
+  }
+  </script>
+</body>
+</html>

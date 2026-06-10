@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hvem er vi? ⚓ MOMFIES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Outfit:wght@300..800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ---- BOK-MODAL ---- */
+    .book {
+      display: grid; grid-template-columns: 280px 1fr;
+      min-height: 500px; gap: 0;
+    }
+    @media (max-width: 640px) { .book { grid-template-columns: 1fr; } }
+
+    .book__spine {
+      background: linear-gradient(160deg, var(--deep), var(--blue));
+      color: var(--paper); padding: 28px 22px;
+      border-right: var(--border); border-radius: var(--radius) 0 0 var(--radius);
+      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .book__spine { border-right: none; border-bottom: var(--border); border-radius: var(--radius) var(--radius) 0 0; }
+    }
+    .book__avatar {
+      width: 100px; height: 100px; border-radius: 50%;
+      border: 3px solid var(--paper); object-fit: cover;
+      box-shadow: var(--shadow-sm); flex: none;
+    }
+    .book__avatar-emoji {
+      width: 100px; height: 100px; border-radius: 50%;
+      border: 3px solid var(--paper); background: rgba(255,255,255,.15);
+      display: grid; place-items: center; font-size: 3rem; flex: none;
+    }
+    .book__name { font-family: var(--font-display); font-size: 1.8rem; line-height: 1; }
+    .book__quote { font-family: var(--font-hand); font-size: 1.15rem; opacity: .85; }
+
+    .book__pages { padding: 24px; overflow-y: auto; max-height: 72vh; }
+
+    /* innlegg */
+    .entry {
+      border-left: 4px solid var(--coral); padding-left: 16px; margin-bottom: 28px;
+      position: relative;
+    }
+    .entry__date { font-size: .8rem; font-weight: 800; color: var(--blue); letter-spacing: .06em; text-transform: uppercase; }
+    .entry__title { font-family: var(--font-display); font-size: 1.4rem; margin: 2px 0 6px; }
+    .entry__text { white-space: pre-wrap; color: #34495e; line-height: 1.6; }
+    .entry__img { margin-top: 10px; border-radius: 12px; border: 2px solid var(--ink); max-width: 100%; max-height: 280px; object-fit: cover; }
+    .entry__del {
+      position: absolute; top: 0; right: 0;
+      background: transparent; border: 0; cursor: pointer;
+      font-size: .85rem; color: #aaa;
+    }
+    .entry__del:hover { color: var(--coral); }
+
+    /* nytt innlegg-skjema */
+    .new-entry {
+      border-top: 2px dashed rgba(10,34,56,.15); padding-top: 20px; margin-top: 8px;
+    }
+    .new-entry h3 { font-size: 1.1rem; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+  <section class="section wrap">
+    <div class="page-head">
+      <span class="eyebrow">Mannskapet</span>
+      <h1>Hvem er <em>vi?</em></h1>
+      <p>Trykk på et kort for å åpne dagboka. 📖</p>
+    </div>
+    <div class="members" id="members"></div>
+  </section>
+
+  <!-- BOK-MODAL -->
+  <div class="modal" id="book-modal">
+    <div class="modal__box" style="max-width:780px;padding:0;overflow:hidden">
+      <button class="modal__close" id="book-close" style="z-index:10">✕</button>
+      <div class="book">
+        <div class="book__spine">
+          <div id="book-avatar"></div>
+          <div class="book__name" id="book-name"></div>
+          <div class="book__quote" id="book-quote"></div>
+        </div>
+        <div class="book__pages" id="book-pages"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+  <script>
+  const MEMBERS = [
+    { name: "Ann",     quote: "x",      img: "Profilbilder/Ann.jpeg" },
+    { name: "Eli",     quote: "Et kne.",                img: null },
+    { name: "Marei",   quote: "X.",                  img: "Profilbilder/Marie.JPG" },
+    { name: "Emmet",   quote: "X.",                      img: "Profilbilder/Emma.JPG" },
+    { name: "Rino",    quote: "d.",               img: "Profilbilder/Rina.JPG" },
+    { name: "Tilde",   quote: "z",       img: "" },
+    { name: "Hæggi",   quote: "Har alltid en plan B. Og en backup-flaske.",          img: "Profilbilder/Hanne.JPG" },
+    { name: "Trusa",   quote: "x.",         img: "Profilbilder/Hanna.JPG" },
+    { name: "Skybert", quote: "X.",                        img: null }
+  ];
+
+  const EMOJIS = ["🦩","🐙","🌊","🐚","🦦","🌺","🍍","🧜‍♀️","⛵"];
+
+  /* render medlemskort */
+  document.getElementById("members").innerHTML = MEMBERS.map((m, i) => `
+    <article class="member" style="cursor:pointer" onclick="openBook(${i})">
+      <div class="member__avatar">
+        ${m.img
+          ? `<img src="${m.img}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover;object-position:center;">`
+          : EMOJIS[i]}
+      </div>
+      <div class="member__name">${esc(m.name)}</div>
+      <p class="member__quote">«${esc(m.quote)}»</p>
+      <p style="font-size:.8rem;color:var(--blue);margin-top:6px;font-weight:700">📖 Åpne dagbok</p>
+    </article>`).join("");
+
+  /* ---- BOK-LOGIKK ---- */
+  const modal = document.getElementById("book-modal");
+  let currentMember = null;
+
+  function getEntries(name) { return Store.get("diary_" + name, []); }
+  function saveEntries(name, arr) { Store.set("diary_" + name, arr); }
+
+  function openBook(i) {
+    const m = MEMBERS[i];
+    currentMember = m;
+
+    // avatar
+    const avatarEl = document.getElementById("book-avatar");
+    avatarEl.innerHTML = m.img
+      ? `<img class="book__avatar" src="${m.img}" alt="${m.name}">`
+      : `<div class="book__avatar-emoji">${EMOJIS[i]}</div>`;
+
+    document.getElementById("book-name").textContent = m.name;
+    document.getElementById("book-quote").textContent = `«${m.quote}»`;
+
+    renderPages();
+    modal.classList.add("is-open");
+  }
+
+  function renderPages() {
+    const entries = getEntries(currentMember.name);
+    const pages = document.getElementById("book-pages");
+
+    const entriesHtml = entries.length
+      ? entries.map(e => `
+          <div class="entry">
+            <button class="entry__del" data-del="${e.id}">slett</button>
+            <div class="entry__date">${esc(e.date)}</div>
+            <div class="entry__title">${esc(e.title)}</div>
+            <div class="entry__text">${esc(e.text)}</div>
+            ${e.img ? `<img class="entry__img" src="${e.img}" alt="">` : ""}
+          </div>`).join("")
+      : `<p class="muted" style="font-style:italic;margin-bottom:24px">Ingen innlegg enda. Skriv det første! ✍️</p>`;
+
+    pages.innerHTML = `
+      ${entriesHtml}
+      <div class="new-entry">
+        <h3>✍️ Nytt innlegg</h3>
+        <div class="field">
+          <label for="e-date">Dato</label>
+          <input class="input" id="e-date" type="date" value="${isoToday()}">
+        </div>
+        <div class="field">
+          <label for="e-title">Overskrift</label>
+          <input class="input" id="e-title" placeholder="F.eks. Roma-turen 🍕" maxlength="80">
+        </div>
+        <div class="field">
+          <label for="e-text">Tekst</label>
+          <textarea class="textarea" id="e-text" placeholder="Skriv hva du vil..."></textarea>
+        </div>
+        <div class="field">
+          <label for="e-img">Bilde (valgfritt)</label>
+          <input type="file" accept="image/*" id="e-img" style="padding:8px 0">
+        </div>
+        <button class="btn btn--coral" id="e-save">＋ Legg til innlegg</button>
+      </div>`;
+
+    pages.querySelectorAll("[data-del]").forEach(b =>
+      b.onclick = () => {
+        const arr = getEntries(currentMember.name).filter(x => x.id !== b.dataset.del);
+        saveEntries(currentMember.name, arr); renderPages();
+      });
+
+    document.getElementById("e-save").onclick = () => {
+      const date = document.getElementById("e-date").value;
+      const title = document.getElementById("e-title").value.trim();
+      const text = document.getElementById("e-text").value.trim();
+      const file = document.getElementById("e-img").files[0];
+      if (!title && !text) { toast("Skriv noe først ✍️"); return; }
+
+      function save(imgData) {
+        const arr = getEntries(currentMember.name);
+        arr.unshift({ id: uid(), date: formatDateNo(date), title, text, img: imgData || null });
+        saveEntries(currentMember.name, arr);
+        renderPages();
+        toast("Innlegg lagt til! 📖");
+      }
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => save(e.target.result);
+        reader.readAsDataURL(file);
+      } else {
+        save(null);
+      }
+    };
+  }
+
+  document.getElementById("book-close").onclick = () => modal.classList.remove("is-open");
+  modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("is-open"); });
+  </script>
+</body>
+</html>
