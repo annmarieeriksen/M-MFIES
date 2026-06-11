@@ -175,7 +175,7 @@
         </div>
         <div class="field" style="margin:8px 0 0">
           <label for="ph-caption">Caption (valgfritt)</label>
-          <input class="input" id="ph-caption" placeholder="Marie fant seg en 40 åring 🌊" maxlength="80">
+          <input class="input" id="ph-caption" placeholder="Marie fant seg en 40 åring " maxlength="80">
         </div>
         <button class="btn btn--coral" id="ph-add" style="margin-top:12px">＋ Legg til bilde</button>
       </div>
@@ -307,7 +307,7 @@
     const PAL = ["--coral","--blue","--mint","--azure","--deep","--sun","--blue","--mint"]
       .map(v => css.getPropertyValue(v).trim());
 
-    let names = Store.seed("albania_wheel", ["Hanne","Hanna","Ann","Eli","Emma","Marie","Rina"]);
+    let names = Store.seed("albania_wheel", ["Hæggi","trusa","Ann","Eli","Emmet","day stripper","Rino"]);
     let rotation = 0, spinning = false, pending = 0;
 
     function build() {

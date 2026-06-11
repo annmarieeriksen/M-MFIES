@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intimidating 🎴 MOMFIES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Outfit:wght@300..800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .game-wrap { max-width: 480px; margin: 0 auto; text-align: center; }
+
+    .card-stage { perspective: 1000px; width: 260px; height: 360px; margin: 0 auto 24px; cursor: pointer; }
+    .card-inner {
+      width: 100%; height: 100%; position: relative;
+      transform-style: preserve-3d;
+      transition: transform .5s cubic-bezier(.4,0,.2,1);
+    }
+    .card-inner.is-flipped { transform: rotateY(180deg); }
+    .card-front, .card-back {
+      position: absolute; inset: 0;
+      border: var(--border); border-radius: var(--radius);
+      box-shadow: var(--shadow); backface-visibility: hidden;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .card-front {
+      background: linear-gradient(150deg, var(--deep), var(--blue));
+      color: var(--paper);
+    }
+    .card-front__title { font-family: var(--font-display); font-size: 2rem; }
+    .card-front__sub { font-family: var(--font-hand); font-size: 1.3rem; opacity: .8; margin-top: 8px; }
+    .card-front__emoji { font-size: 4rem; margin-bottom: 12px; }
+
+    .card-back { background: var(--paper); transform: rotateY(180deg); }
+    .card-back__img {
+      width: 140px; height: 140px; border-radius: 50%;
+      object-fit: cover; object-position: center;
+      border: var(--border); box-shadow: var(--shadow-sm);
+      margin-bottom: 14px;
+    }
+    .card-back__emoji { font-size: 5rem; margin-bottom: 14px; line-height: 1; }
+    .card-back__name { font-family: var(--font-display); font-size: 2rem; }
+
+    .result {
+      min-height: 80px; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 6px;
+      margin-bottom: 20px;
+    }
+    .result__main { font-family: var(--font-display); font-size: 1.6rem; line-height: 1.1; }
+    .result__sub { font-family: var(--font-hand); font-size: 1.25rem; color: var(--blue); }
+
+    .rules-box {
+      background: var(--foam); border: var(--border); border-radius: var(--radius);
+      padding: 18px; text-align: left; margin-bottom: 24px;
+    }
+    .rules-box h3 { font-size: 1rem; margin-bottom: 10px; }
+    .rules-box li { margin-bottom: 6px; font-size: .95rem; }
+  </style>
+</head>
+<body>
+  <section class="section wrap">
+    <div class="page-head center">
+      <span class="eyebrow">🎴🎴🎴🎴🎴🎴🎴🎴🎴🎴🎴🎴🎴</span>
+      <h1><em>Intimidating</em></h1>
+      <p>Hvem blir nakey?</p>
+    </div>
+
+    <div class="game-wrap">
+
+  <div class="rules-box" style="text-align:left;background:linear-gradient(150deg,var(--deep),var(--blue));color:var(--paper);border:var(--border);border-radius:var(--radius);padding:24px;margin-bottom:28px">
+  <h2 style="font-family:var(--font-display);font-size:1.8rem;margin-bottom:4px;color:var(--paper)">Ingen er trygge.</h2>
+  <p style="font-family:var(--font-hand);font-size:1.25rem;opacity:.85;margin-bottom:18px">Sangen spilles. Kortene avgjør alt. Du vet ikke hvem som rammes neste gang...</p>
+  <ul style="list-style:none;padding:0;display:grid;gap:10px">
+    <li style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:1.4rem;flex:none">🎴</span><span><b>Trykk på kortet.</b> Et ansikt avsløres. Ingen forberedelser, ingen unnskyldninger.</span></li>
+    <li style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:1.4rem;flex:none">😈</span><span><b>Ditt eget ansikt?</b> Du eier rommet akkurat nå, alle andre tar 5 slurker og takker for det.</span></li>
+    <li style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:1.4rem;flex:none">💀</span><span><b>Noen andres ansikt?</b> Du blir eid og tar 5 slurker for å vise at du ikke er intimidated. Slik er livet.</span></li>
+    <li style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:1.4rem;flex:none">🔥</span><span><b>3 på rad?</b> Du lager en regel. og én person du velger tar av et plagg. Makten er din. Bruk den klokt.</span></li>
+    <li style="display:flex;gap:12px;align-items:flex-start"><span style="font-size:1.4rem;flex:none">⚡</span><span><b>Vær ikke en flaskehals.</b> Dette skal gå fort. Ingen pauser, ingen diskusjoner. Trykk, drikk, videre.</span></li>
+    <li style="display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.1);padding:12px;border-radius:12px;border:2px solid rgba(255,255,255,.2)"><span style="font-size:1.4rem;flex:none">🎵</span><span><b>Når sangen slutter</b> ansiktet på kortet i det sangen tar slutt er <em>intimidated</em>. De må drikke resten av drinken sin for å bevise at de ikke er redd for noen ting.</span></li>
+  </ul>
+</div>
+
+      <!-- KORT -->
+      <div class="card-stage" id="card-stage" onclick="flipCard()">
+        <div class="card-inner" id="card-inner">
+          <div class="card-front">
+            <div class="card-front__emoji">🎴</div>
+            <div class="card-front__title">Trykk</div>
+            <div class="card-front__sub">for å trekke et kort</div>
+          </div>
+          <div class="card-back" id="card-back">
+            <div class="card-back__emoji" id="cb-emoji">🦩</div>
+            <div class="card-back__name" id="cb-name">Ann</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTAT -->
+      <div class="result" id="result"></div>
+
+      <button class="btn btn--ghost btn--sm" onclick="resetGame()">↺ Start på nytt</button>
+    </div>
+  </section>
+
+  <script src="main.js"></script>
+  <script>
+  const PLAYERS = [
+    { name: "Ann",     img: "Profilbilder/Ann.JPG",   emoji: "🦩" },
+    { name: "Eli",     img: null,                      emoji: "🐙" },
+    { name: "Marei",   img: null,                      emoji: "🌊" },
+    { name: "Emmet",   img: null,                      emoji: "🐚" },
+    { name: "Rino",    img: "Profilbilder/Rina.jpeg",  emoji: "🦦" },
+    { name: "Tilde",   img: null,                      emoji: "🌺" },
+    { name: "Hæggi",   img: "Profilbilder/Hanne.JPG",  emoji: "🍍" },
+    { name: "Trusa",   img: "Profilbilder/Hanna.JPG",  emoji: "🧜‍♀️" },
+    { name: "Skybert", img: null,                      emoji: "⛵" }
+  ];
+
+  let isFlipped = false;
+  let canFlip = true;
+  let lastDrawn = null;
+  let streakCount = 0;
+
+  function flipCard() {
+    if (!canFlip) return;
+    const inner = document.getElementById("card-inner");
+
+    if (!isFlipped) {
+      const drawn = PLAYERS[Math.floor(Math.random() * PLAYERS.length)];
+
+      // streak-telling
+      if (lastDrawn && drawn.name === lastDrawn.name) {
+        streakCount++;
+      } else {
+        streakCount = 1;
+      }
+      lastDrawn = drawn;
+
+      // oppdater kortets bakside
+      const cbEmoji = document.getElementById("cb-emoji");
+      const cbName = document.getElementById("cb-name");
+      const back = document.getElementById("card-back");
+      const oldImg = back.querySelector(".card-back__img");
+      if (oldImg) oldImg.remove();
+
+      if (drawn.img) {
+        cbEmoji.style.display = "none";
+        const img = document.createElement("img");
+        img.className = "card-back__img";
+        img.src = drawn.img;
+        img.alt = drawn.name;
+        back.insertBefore(img, cbName);
+      } else {
+        cbEmoji.style.display = "block";
+        cbEmoji.textContent = drawn.emoji;
+      }
+      cbName.textContent = drawn.name;
+
+      inner.classList.add("is-flipped");
+      isFlipped = true;
+      canFlip = false;
+
+      // vis resultat
+      const resultEl = document.getElementById("result");
+      if (streakCount >= 3) {
+        streakCount = 0;
+        resultEl.innerHTML = `
+          <div class="result__main">🔥 3 PÅ RAD!</div>
+          <div class="result__sub">${esc(drawn.name)} lager en regel + velger én som tar av et plagg 😈</div>`;
+      } else {
+        resultEl.innerHTML = `
+          <div class="result__main">🎴 ${esc(drawn.name)}</div>
+          <div class="result__sub">Er det deg? Alle andre drikker<br>Er det noen andre?  ta 5 slurker 💀</div>`;
+      }
+
+      setTimeout(() => { canFlip = true; }, 600);
+
+    } else {
+      inner.classList.remove("is-flipped");
+      isFlipped = false;
+      document.getElementById("result").innerHTML = "";
+    }
+  }
+
+  function resetGame() {
+    isFlipped = false; canFlip = true; lastDrawn = null; streakCount = 0;
+    document.getElementById("card-inner").classList.remove("is-flipped");
+    document.getElementById("result").innerHTML = "";
+    toast("Nytt spill! 🎴");
+  }
+  </script>
+</body>
+</html>

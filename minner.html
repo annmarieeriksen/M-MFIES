@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Turer 🧳 MOMFIES</title>
+  <title>Minner 🌸 MOMFIES</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Outfit:wght@300..800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
@@ -11,7 +11,6 @@
   <style>
     .trip-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 32px; }
     @media (max-width: 520px) { .trip-buttons { grid-template-columns: 1fr; } }
-
     .trip-btn {
       position: relative; cursor: pointer; border: var(--border);
       border-radius: var(--radius); overflow: hidden;
@@ -21,10 +20,7 @@
       background: var(--deep);
     }
     .trip-btn:hover { transform: translate(-3px,-3px); box-shadow: 9px 9px 0 var(--ink); }
-    .trip-btn__bg {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; opacity: .7;
-    }
+    .trip-btn__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .7; }
     .trip-btn__label {
       position: relative; z-index: 2; width: 100%;
       padding: 18px 20px;
@@ -33,18 +29,10 @@
     }
     .trip-btn__title { font-family: var(--font-display); font-size: clamp(1.8rem,5vw,2.6rem); line-height: 1; }
     .trip-btn__sub { font-size: .9rem; opacity: .85; margin-top: 2px; }
-
-    /* galleri modal */
-    .gal-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 10px;
-      margin-top: 18px;
-    }
+    .gal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 10px; margin-top: 18px; }
     .gal-item { position: relative; border-radius: 12px; overflow: hidden; border: 2px solid var(--ink); }
     .gal-item img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; cursor: zoom-in; }
-    .gal-item__cap {
-      padding: 6px 10px; font-family: var(--font-hand); font-size: 1.1rem;
-      background: var(--paper); color: var(--deep);
-    }
+    .gal-item__cap { padding: 6px 10px; font-family: var(--font-hand); font-size: 1.1rem; background: var(--paper); color: var(--deep); }
     .gal-item__del {
       position: absolute; top: 6px; right: 6px;
       background: var(--coral); color: var(--paper); border: 2px solid var(--ink);
@@ -52,8 +40,6 @@
       font-size: .75rem; font-weight: 800; line-height: 26px; text-align: center;
     }
     .gal-item.is-static .gal-item__del { display: none; }
-
-    /* lightbox */
     .lightbox {
       position: fixed; inset: 0; z-index: 600;
       background: rgba(0,0,0,.88); display: none;
@@ -70,23 +56,20 @@
 </head>
 <body>
   <section class="section wrap">
-    <div class="page-head">
-      <h1>Våre <em>turer</em></h1>
-    </div>
-
+    <h1 style="font-size:clamp(2.4rem,6vw,3.6rem);margin-bottom:28px">Våre <em style="color:var(--coral)">minner</em></h1>
     <div class="trip-buttons">
-      <button class="trip-btn" onclick="openTrip('ibiza')">
-        <img class="trip-btn__bg" src="turer/ibiza/cover.jpg" onerror="this.style.display='none'" alt="">
+      <button class="trip-btn" onclick="openAlbum('pre2018')">
+        <img class="trip-btn__bg" src="minner/pre2018/cover.jpg" onerror="this.style.display='none'" alt="">
         <div class="trip-btn__label">
-          <div class="trip-btn__title">Ibiza</div>
-          <div class="trip-btn__sub">2022 · Spania 🇪🇸</div>
+          <div class="trip-btn__title">Pre 2018</div>
+          <div class="trip-btn__sub">yuh 🌱</div>
         </div>
       </button>
-      <button class="trip-btn" onclick="openTrip('tenerife')">
-        <img class="trip-btn__bg" src="turer/tenerife/cover.jpg" onerror="this.style.display='none'" alt="">
+      <button class="trip-btn" onclick="openAlbum('pre2021')">
+        <img class="trip-btn__bg" src="minner/pre2021/cover.jpg" onerror="this.style.display='none'" alt="">
         <div class="trip-btn__label">
-          <div class="trip-btn__title">Tenerife</div>
-          <div class="trip-btn__sub">2021 · Kanariøyene 🇪🇸</div>
+          <div class="trip-btn__title">Pre 2021</div>
+          <div class="trip-btn__sub">Faen ble vi voksne nå/: Dette var et halvt ti år siden.. + litt til</div>
         </div>
       </button>
     </div>
@@ -96,11 +79,7 @@
   <div class="modal" id="gal-modal">
     <div class="modal__box" style="max-width:800px">
       <button class="modal__close" id="gal-close">✕</button>
-      <span class="eyebrow" id="gal-eyebrow">Ibiza</span>
-      <h2 id="gal-title" style="font-size:2rem;margin:4px 0 6px">Ibiza 2022</h2>
-      <p id="gal-sub" class="muted"></p>
-
-      <!-- last opp fra nettside -->
+      <h2 id="gal-title" style="font-size:2rem;margin-bottom:6px"></h2>
       <div class="card" style="margin-top:18px;margin-bottom:4px">
         <div class="row-2">
           <div class="field" style="margin:0">
@@ -109,12 +88,11 @@
           </div>
           <div class="field" style="margin:0">
             <label for="gal-cap">Caption</label>
-            <input class="input" id="gal-cap" placeholder="placeholder" maxlength="80">
+            <input class="input" id="gal-cap" placeholder="ble bla" maxlength="80">
           </div>
         </div>
         <button class="btn btn--coral btn--sm" id="gal-add" style="margin-top:10px">＋ Last opp</button>
       </div>
-
       <div class="gal-grid" id="gal-grid"></div>
     </div>
   </div>
@@ -127,88 +105,33 @@
 
   <script src="main.js"></script>
   <script>
-
-  /* =====================================================================
-     STATISKE BILDER FRA VSCODE
-     Legg til bilder her — src er filsti relativt til turer.html
-     Lag mappene: momfies/turer/ibiza/ og momfies/turer/tenerife/
-     Navngi gjerne bildene: 01.jpg, 02.jpg osv.
-     ===================================================================== */
+  /* statiske bilder fra VSCode
+     lag mappene: momfies/minner/pre2018/ og momfies/minner/pre2021/
+  */
   const STATIC = {
-    ibiza: [
-  { src: "Ibiza/IMG_0490.jpeg", caption: "" },
-  { src: "Ibiza/IMG_0557.jpeg", caption: "" },
-  { src: "Ibiza/IMG_0562.jpeg", caption: "" },
-  { src: "Ibiza/IMG_0571.jpeg", caption: "" },
-  { src: "Ibiza/IMG_0579.jpeg", caption: "" },
-  { src: "Ibiza/IMG_0587.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2211.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2214.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2232.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2236.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2237.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2239.JPG",  caption: "" },
-  { src: "Ibiza/IMG_2242.PNG",  caption: "" },
-  { src: "Ibiza/IMG_2250.jpg",  caption: "" },
-  { src: "Ibiza/IMG_2252.JPG",  caption: "" },
-  { src: "Ibiza/IMG_2257.JPG",  caption: "" },
-  { src: "Ibiza/IMG_2265.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2275.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2300.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2302(1).jpeg", caption: "" },
-  { src: "Ibiza/IMG_2454.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2497.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2557.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2562.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2566.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2662.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2735.jpeg", caption: "" },
-  { src: "Ibiza/IMG_2742.PNG",  caption: "" },
-  { src: "Ibiza/IMG_2812.jpg",  caption: "" },
-],
-    tenerife: [
-  { src: "Tenerife/IMG_1906.jpeg", caption: "" },
-  { src: "Tenerife/IMG_1910.jpeg", caption: "" },
-  { src: "Tenerife/IMG_1934.jpeg", caption: "" },
-  { src: "Tenerife/IMG_2019.jpeg", caption: "" },
-  { src: "Tenerife/IMG_2118.jpeg", caption: "" },
-  { src: "Tenerife/IMG_2131.jpeg", caption: "" },
-  { src: "Tenerife/IMG_2696.jpeg", caption: "" },
-  { src: "Tenerife/IMG_2699.jpeg", caption: "" },
-  { src: "Tenerife/IMG_2753.jpeg", caption: "" },
-  { src: "Tenerife/IMG_2760.jpeg", caption: "" },
-  { src: "Tenerife/IMG_9363.jpeg", caption: "" },
-  { src: "Tenerife/IMG_9450.png",  caption: "" },
-  { src: "Tenerife/IMG_9451.png",  caption: "" },
-  { src: "Tenerife/IMG_9452.png",  caption: "" },
-  { src: "Tenerife/IMG_9454.jpeg", caption: "" },
-  { src: "Tenerife/IMG_9455.png",  caption: "" },
-  { src: "Tenerife/IMG_9475.png",  caption: "" },
-  { src: "Tenerife/IMG_9516.jpg",  caption: "" },
-  { src: "Tenerife/IMG_9521.jpg",  caption: "" },
-  { src: "Tenerife/IMG_9529.jpg",  caption: "" },
-  { src: "Tenerife/IMG_9531.jpg",  caption: "" },
-],
+    pre2018: [
+      // { src: "minner/pre2018/01.jpg", caption: "" },
+    ],
+    pre2021: [
+      // { src: "minner/pre2021/01.jpg", caption: "" },
+    ]
   };
 
   const META = {
-    ibiza:    { title: "Ibiza 2022",    sub: "x - x Juli · Ibiza, Spania 🇪🇸",         eyebrow: "Sommer 2022" },
-    tenerife: { title: "Tenerife 2021", sub: "x - x. november · Tenerife, Kanariøyene 🇪🇸", eyebrow: "Høst 2021" }
+    pre2018: { title: "Pre 2018" },
+    pre2021: { title: "Pre 2021" }
   };
 
   const modal = document.getElementById("gal-modal");
   const lightbox = document.getElementById("lightbox");
-  let currentTrip = null;
+  let currentAlbum = null;
 
-  function getUploaded(trip) { return Store.get("trip_photos_" + trip, []); }
-  function saveUploaded(trip, arr) { Store.set("trip_photos_" + trip, arr); }
+  function getUploaded(album) { return Store.get("minner_" + album, []); }
+  function saveUploaded(album, arr) { Store.set("minner_" + album, arr); }
 
-  function openTrip(trip) {
-    currentTrip = trip;
-    const m = META[trip];
-    document.getElementById("gal-eyebrow").textContent = m.eyebrow;
-    document.getElementById("gal-title").textContent = m.title;
-    document.getElementById("gal-sub").textContent = m.sub;
+  function openAlbum(album) {
+    currentAlbum = album;
+    document.getElementById("gal-title").textContent = META[album].title;
     document.getElementById("gal-file").value = "";
     document.getElementById("gal-cap").value = "";
     renderGrid();
@@ -217,15 +140,15 @@
 
   function renderGrid() {
     const grid = document.getElementById("gal-grid");
-    const uploaded = getUploaded(currentTrip);
-    const statics = STATIC[currentTrip] || [];
+    const uploaded = getUploaded(currentAlbum);
+    const statics = STATIC[currentAlbum] || [];
     const all = [
       ...uploaded.map(p => ({ ...p, isStatic: false })),
       ...statics.map(p => ({ ...p, id: p.src, isStatic: true }))
     ];
 
     if (!all.length) {
-      grid.innerHTML = `<p class="empty" style="grid-column:1/-1">Ingen bilder enda. Legg til det første! 📸</p>`;
+      grid.innerHTML = `<p class="empty" style="grid-column:1/-1">Ingen bilder enda 📸</p>`;
       return;
     }
 
@@ -239,8 +162,8 @@
 
     grid.querySelectorAll("[data-del]").forEach(b =>
       b.onclick = () => {
-        const arr = getUploaded(currentTrip).filter(x => x.id !== b.dataset.del);
-        saveUploaded(currentTrip, arr); renderGrid();
+        const arr = getUploaded(currentAlbum).filter(x => x.id !== b.dataset.del);
+        saveUploaded(currentAlbum, arr); renderGrid();
       });
   }
 
@@ -250,9 +173,9 @@
     if (!file) { toast("Velg et bilde først 📷"); return; }
     const reader = new FileReader();
     reader.onload = (e) => {
-      const arr = getUploaded(currentTrip);
+      const arr = getUploaded(currentAlbum);
       arr.unshift({ id: uid(), url: e.target.result, caption });
-      saveUploaded(currentTrip, arr); renderGrid();
+      saveUploaded(currentAlbum, arr); renderGrid();
       document.getElementById("gal-file").value = "";
       document.getElementById("gal-cap").value = "";
       toast("Bilde lagt til! 📸");
@@ -261,9 +184,9 @@
   };
 
   function openLightbox(idOrSrc, isStatic) {
-    const uploaded = getUploaded(currentTrip);
-    const statics = STATIC[currentTrip] || [];
-    let src = isStatic
+    const uploaded = getUploaded(currentAlbum);
+    const statics = STATIC[currentAlbum] || [];
+    const src = isStatic
       ? statics.find(p => p.src === idOrSrc)?.src
       : uploaded.find(p => p.id === idOrSrc)?.url;
     if (!src) return;

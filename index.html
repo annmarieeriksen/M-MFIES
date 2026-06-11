@@ -19,22 +19,29 @@
         <h1>welcome welcome<br>to the cløb,<br><em>jenter.</em></h1>
         <p class="lead">🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺</p>
         <div class="hero__cta">
-          <a class="btn btn--coral" href="turer.html">🧳 Se turene</a>
-          <a class="btn btn--ghost" href="hvem.html">👯 Møt gjengen</a>
+          <a class="btn btn--coral" href="turer.html">🧳 harry turæne</a>
+          <a class="btn btn--ghost" href="hvem.html">👯 gængen</a>
         </div>
       </div>
 
       <!-- NESTE EVENTYR -->
       <a class="event" id="event" href="turer.html">
         <span class="event__pin">neste eventyr!</span>
-        <span class="eyebrow" style="color:var(--sky)">Pakk kofferten</span>
-        <div class="event__where" id="ev-where">Albania</div>
+        <span class="eyebrow" style="color:var(--sky)">🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺🍺</span>
+        <div class="event__where" id="ev-where">AlbaniaAaAaAaAaAaA</div>
         <div class="event__when" id="ev-when">22.–29. juni</div>
         <div class="event__count" id="countdown"></div>
-        <p style="margin-top:14px;font-size:.9rem;opacity:.85">Trykk for detaljer &amp; bildegalleri →</p>
+        <p style="margin-top:14px;font-size:.9rem;opacity:.85"></p>
       </a>
     </div>
   </section>
+
+  <div class="card" style="margin-top:18px;text-align:center;background:var(--deep);color:var(--paper);border:var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px">
+  <span style="font-size:1.1rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--sky)"></span>
+  <div style="font-family:var(--font-display);font-size:2.2rem;margin:4px 0">🎤 Karpe</div>
+  <div style="font-weight:700;opacity:.9">2. juli 2026</div>
+  <div class="event__count" id="karpe-countdown" style="margin-top:14px;justify-content:center"></div>
+</div>
 
   <svg class="wave" viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden="true">
     <path fill="currentColor" d="M0,24 C240,48 360,0 720,16 C1080,32 1200,4 1440,24 L1440,48 L0,48 Z"></path>
@@ -46,7 +53,7 @@
       <div class="card" style="background:var(--paper)">
         <div class="cal__head">
           <div>
-            <span class="eyebrow">Hva skjer</span>
+            <span class="eyebrow">Hva skjera??</span>
             <div class="cal__title" id="cal-title">Måned</div>
           </div>
           <div class="cal__nav">
@@ -56,7 +63,6 @@
           </div>
         </div>
         <div class="cal__grid" id="cal-grid"></div>
-        <p class="cal__hint">💡 Trykk på en dato for å legge til noe (avreise, fest, bursdag…). Alt lagres lokalt.</p>
       </div>
     </div>
   </section>
@@ -71,9 +77,10 @@
     <h2 style="font-size:clamp(2rem,5vw,3rem);margin:4px 0 18px">ting og tang</h2>
     <div class="tiles">
       <a class="tile" href="albania.html" style="background:linear-gradient(150deg,var(--sky),var(--foam))"><div class="tile__icon">🏝️</div><h3>Albaniaaaaa</h3><p>...</p></a>
-      <a class="tile" href="hvem.html"><div class="tile__icon">👯</div><h3>Hvem er vi?</h3><p>Møt alle </p></a>
+      <a class="tile" href="hvem.html"><div class="tile__icon">👯</div><h3>Gængmembers</h3><p> </p></a>
       <a class="tile" href="turer.html"><div class="tile__icon">🧳</div><h3>Turer</h3></a>
       <a class="tile" href="drikkeleker.html"><div class="tile__icon">🍹</div><h3>Drikkeleker</h3><p></p></a>
+      <a class="tile" href="minner.html"><div class="tile__icon">🌸</div><h3>Minner</h3><p..</p></a>
     </div>
   </section>
 
@@ -127,7 +134,18 @@
     const MND = ["januar","februar","mars","april","mai","juni","juli","august","september","oktober","november","desember"];
     const DOW = ["man","tir","ons","tor","fre","lør","søn"];
 
-    let events = Store.get("cal_events", {});   // { "YYYY-MM-DD": [ "tekst", ... ] }
+    let events = Store.seed("cal_events", {
+  "2026-07-02": ["Karpe konsert 🎤"],
+  "2026-07-23": ["🎂 Tilde bursdag!"],
+  "2026-08-01": ["🎂 Marie bursdag!"],
+  "2026-08-28": ["🎂 Emma bursdag!"],
+  "2026-10-30": ["🎂 Hanne bursdag!"],
+  "2026-11-22": ["🎂 Ann bursdag!"],
+  "2026-12-13": ["🎂 Eli bursdag!"],
+  "2027-04-06": ["🎂 Rina bursdag!"],
+  "2027-04-08": ["🎂 Mari bursdag!"],
+  "2027-05-17": ["🎂 Hanna bursdag! 🇳🇴"],
+});
     let selectedIso = null;
     const today = new Date();
     let view = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -223,6 +241,21 @@
 
     render();
   })();
+
+  (function () {
+  const box = document.getElementById("karpe-countdown");
+  const target = new Date("2026-07-02T00:00:00");
+  function tick() {
+    let diff = Math.floor((target - new Date()) / 1000);
+    if (diff <= 0) { box.innerHTML = `<div class="count-box"><b>🎉 I dag!</b></div>`; return; }
+    const d = Math.floor(diff/86400); diff-=d*86400;
+    const h = Math.floor(diff/3600);  diff-=h*3600;
+    const m = Math.floor(diff/60);    const s = diff-m*60;
+    box.innerHTML = [["dager",d],["timer",h],["min",m],["sek",s]]
+      .map(([l,v])=>`<div class="count-box"><b>${String(v).padStart(2,"0")}</b><span>${l}</span></div>`).join("");
+  }
+  tick(); setInterval(tick, 1000);
+})();
   </script>
 </body>
 </html>

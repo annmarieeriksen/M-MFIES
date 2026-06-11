@@ -8,7 +8,7 @@
 /* ---- Rediger gjengen her ---- */
 const GANG = {
   name: "MOMFIES",
-  emoji: "🌊",
+  emoji: "👹",
   tagline: "",
   // neste eventyr (brukes i forside-hero + kalender)
   trip: {
@@ -22,13 +22,14 @@ const GANG = {
 
 /* ---- Navigasjon (rediger menypunkter her) ---- */
 const NAV = [
-  { href: "index.html",       label: "Hjem",       icon: "" },
-  { href: "albania.html",     label: "Albania",    icon: "🏝️" },
-  { href: "hvem.html",        label: "Hvem",       icon: "👯" },
-  { href: "turer.html",       label: "Turer",      icon: "🧳" },
-  { href: "drikkeleker.html", label: "Drikkeleker",icon: "🍹" },
+  { href: "index.html",        label: "Hjem",         icon: "" },
+  { href: "albania.html",      label: "Albania",      icon: "🏝️" },
+  { href: "hvem.html",         label: "Hvem",         icon: "👯" },
+  { href: "turer.html",        label: "Turer",        icon: "🧳" },
+  { href: "drikkeleker.html",  label: "Drikkeleker",  icon: "🍹" },
+  { href: "minner.html",       label: "Minner", icon: "🌸" },
+  { href: "tipping.html", label: "VM Tipping", icon: "⚽" },
 ];
-
 /* =====================================================================
    localStorage-hjelpere
    ===================================================================== */
