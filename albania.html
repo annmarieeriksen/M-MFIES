@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="no">
 <head>
+  <script type="module" src="firebase.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Albania 🏝️ MOMFIES</title>
@@ -249,55 +250,74 @@
     tick(); setInterval(tick,1000);
   })();
 
-  /* ---------- DRIKKETELLER ---------- */
-  (function () {
-    const TYPES = [
-      { key:"shot", emoji:"🥃", label:"Shot" },
-      { key:"ol",   emoji:"🍺", label:"Øl" },
-      { key:"drink",emoji:"🍹", label:"Drink" },
-      { key:"vin",  emoji:"🍷", label:"Vin" },
-      { key:"vann", emoji:"💧", label:"Vann" }
-    ];
-    const grid = document.getElementById("counter-grid");
-    const totalEl = document.getElementById("drink-total");
-    let drinks = Store.seed("albania_drinks", { shot:0, ol:0, drink:0, vin:0, vann:0 });
+  /* ---------- DRIKKETELLER (Firebase) ---------- */
+(async function () {
+  const { db, ref, set, onValue } = await import('./firebase.js');
+  const TYPES = [
+    { key:"shot", emoji:"🥃", label:"Shot" },
+    { key:"ol",   emoji:"🍺", label:"Øl" },
+    { key:"drink",emoji:"🍹", label:"Drink" },
+    { key:"vin",  emoji:"🍷", label:"Vin" },
+    { key:"vann", emoji:"💧", label:"Vann" }
+  ];
+  const grid = document.getElementById("counter-grid");
+  const totalEl = document.getElementById("drink-total");
+  const drinksRef = ref(db, 'albania/drinks');
+  let drinks = { shot:0, ol:0, drink:0, vin:0, vann:0 };
 
-    grid.innerHTML = TYPES.map(t => `
-      <div class="counter" data-key="${t.key}">
-        <button class="counter__minus" data-minus="${t.key}" aria-label="minus">−</button>
-        <div class="counter__emoji">${t.emoji}</div>
-        <div class="counter__num" id="num-${t.key}">0</div>
-        <div class="counter__label">${t.label}</div>
-        <div class="counter__tap">trykk +1</div>
-      </div>`).join("");
+  grid.innerHTML = TYPES.map(t => `
+    <div class="counter" data-key="${t.key}">
+      <button class="counter__minus" data-minus="${t.key}" aria-label="minus">−</button>
+      <div class="counter__emoji">${t.emoji}</div>
+      <div class="counter__num" id="num-${t.key}">0</div>
+      <div class="counter__label">${t.label}</div>
+      <div class="counter__tap">+1</div>
+    </div>`).join("");
 
-    function setNumbers(bumpKey) {
-      let total = 0;
-      TYPES.forEach(t => {
-        const v = drinks[t.key] || 0; total += v;
-        const el = document.getElementById("num-" + t.key);
-        el.textContent = v;
-        if (bumpKey === t.key) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
-      });
-      totalEl.textContent = total;
-    }
-    async function push() {
-      Store.set("albania_drinks", drinks);
-      if (DRINK_SYNC) { try { await fetch(`${DRINK_SYNC}/momfies_drinks.json`, { method:"PUT", body: JSON.stringify(drinks) }); } catch(e){} }
-    }
-
-    grid.querySelectorAll(".counter").forEach(card => {
-      card.addEventListener("click", () => { const k = card.dataset.key; drinks[k] = (drinks[k]||0) + 1; setNumbers(k); push(); });
+  function setNumbers(bumpKey) {
+    let total = 0;
+    TYPES.forEach(t => {
+      const v = drinks[t.key] || 0; total += v;
+      const el = document.getElementById("num-" + t.key);
+      el.textContent = v;
+      if (bumpKey === t.key) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
     });
-    grid.querySelectorAll("[data-minus]").forEach(b => {
-      b.addEventListener("click", (e) => { e.stopPropagation(); const k = b.dataset.minus; drinks[k] = Math.max(0,(drinks[k]||0)-1); setNumbers(); push(); });
-    });
-    document.getElementById("drink-reset").onclick = () => {
-      if (confirmAction("Nullstille hele drikketelleren?")) { drinks = { shot:0,ol:0,drink:0,vin:0,vann:0 }; setNumbers(); push(); toast("Nullstilt 🧼"); }
-    };
+    totalEl.textContent = total;
+  }
 
+  grid.querySelectorAll(".counter").forEach(card => {
+    card.addEventListener("click", () => {
+      const k = card.dataset.key;
+      drinks[k] = (drinks[k] || 0) + 1;
+      set(drinksRef, drinks);
+      setNumbers(k);
+    });
+  });
+
+  grid.querySelectorAll("[data-minus]").forEach(b => {
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const k = b.dataset.minus;
+      drinks[k] = Math.max(0, (drinks[k] || 0) - 1);
+      set(drinksRef, drinks);
+      setNumbers();
+    });
+  });
+
+  document.getElementById("drink-reset").onclick = () => {
+    if (confirmAction("Nullstille hele drikketelleren?")) {
+      drinks = { shot:0, ol:0, drink:0, vin:0, vann:0 };
+      set(drinksRef, drinks);
+      setNumbers();
+      toast("Nullstilt 🧼");
+    }
+  };
+
+  onValue(drinksRef, snap => {
+    drinks = snap.val() || { shot:0, ol:0, drink:0, vin:0, vann:0 };
     setNumbers();
-  })();
+  });
+})();
 
   /* ---------- SPINNEHJUL ---------- */
   (function () {
@@ -366,35 +386,38 @@
     build();
   })();
 
-  /* ---------- SITATVEGG ---------- */
-  (function () {
-    const wall = document.getElementById("quotes");
-    let quotes = Store.seed("albania_quotes", []);
-    const save = () => Store.set("albania_quotes", quotes);
+  /* ---------- SITATVEGG (Firebase) ---------- */
+(async function () {
+  const { db, ref, push, remove, onValue } = await import('./firebase.js');
+  const wall = document.getElementById("quotes");
+  const quotesRef = ref(db, 'albania/quotes');
 
-    function render() {
-      wall.innerHTML = quotes.length
-        ? quotes.map(q => `
-            <div class="note">
-              «${esc(q.text)}»
-              ${q.who ? `<span class="note__who">– ${esc(q.who)}</span>` : ""}
-              <button class="note__del" data-del="${q.id}">slett</button>
-            </div>`).join("")
-        : `<p class="empty">Veggen er tom… enn så lenge 🤭</p>`;
-      wall.querySelectorAll("[data-del]").forEach(b =>
-        b.onclick = () => { quotes = quotes.filter(x => x.id !== b.dataset.del); save(); render(); });
-    }
-    document.getElementById("q-add").onclick = () => {
-      const text = document.getElementById("q-text").value.trim();
-      const who = document.getElementById("q-who").value.trim();
-      if (!text) { toast("Skriv et sitat først ✍️"); return; }
-      quotes.unshift({ id: uid(), text, who }); save(); render();
-      document.getElementById("q-text").value = "";
-      document.getElementById("q-who").value = "";
-      toast("Hengt opp på veggen 📌");
-    };
-    render();
-  })();
+  function render(data) {
+    const list = data ? Object.entries(data) : [];
+    wall.innerHTML = list.length
+      ? list.reverse().map(([key, q]) => `
+          <div class="note">
+            «${esc(q.text)}»
+            ${q.who ? `<span class="note__who">– ${esc(q.who)}</span>` : ""}
+            <button class="note__del" data-key="${key}">slett</button>
+          </div>`).join("")
+      : `<p class="empty">Veggen er tom… enn så lenge 🤭</p>`;
+    wall.querySelectorAll("[data-key]").forEach(b =>
+      b.onclick = () => remove(ref(db, 'albania/quotes/' + b.dataset.key)));
+  }
+
+  onValue(quotesRef, snap => render(snap.val()));
+
+  document.getElementById("q-add").onclick = () => {
+    const text = document.getElementById("q-text").value.trim();
+    const who = document.getElementById("q-who").value.trim();
+    if (!text) { toast("Skriv et sitat først ✍️"); return; }
+    push(quotesRef, { text, who, tid: Date.now() });
+    document.getElementById("q-text").value = "";
+    document.getElementById("q-who").value = "";
+    toast("Hengt opp på veggen 📌");
+  };
+})();
 
   /* ---------- BILDEVEGG ---------- */
   (function () {
@@ -436,25 +459,27 @@
     render();
   })();
 
-  /* ---------- UKEPLAN ---------- */
-  (function () {
-    const body = document.getElementById("plan-body");
-    const DAGER = ["Søndag","Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag"];
-    let plan = Store.seed("albania_plan", {});
-    const save = () => Store.set("albania_plan", plan);
+  /* ---------- UKEPLAN (Firebase) ---------- */
+(async function () {
+  const { db, ref, set, onValue } = await import('./firebase.js');
+  const body = document.getElementById("plan-body");
+  const DAGER = ["Søndag","Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag"];
+  const planRef = ref(db, 'albania/plan');
+  let plan = {};
 
-    function days() {
-      const out = [];
-      let d = new Date(GANG.trip.start + "T00:00:00");
-      const end = new Date(GANG.trip.end + "T00:00:00");
-      let guard = 0;
-      while (d <= end && guard < 60) { out.push(new Date(d)); d.setDate(d.getDate()+1); guard++; }
-      return out;
-    }
-    function isoOf(dt) {
-      return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
-    }
+  function days() {
+    const out = [];
+    let d = new Date(GANG.trip.start + "T00:00:00");
+    const end = new Date(GANG.trip.end + "T00:00:00");
+    let guard = 0;
+    while (d <= end && guard < 60) { out.push(new Date(d)); d.setDate(d.getDate()+1); guard++; }
+    return out;
+  }
+  function isoOf(dt) {
+    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
+  }
 
+  function buildTable() {
     body.innerHTML = days().map(dt => {
       const iso = isoOf(dt);
       const p = plan[iso] || {};
@@ -471,105 +496,123 @@
         const iso = inp.closest("tr").dataset.iso;
         if (!plan[iso]) plan[iso] = {};
         plan[iso][inp.dataset.f] = inp.value;
-        save();
+        set(ref(db, 'albania/plan/' + iso), plan[iso]);
       });
     });
-  })();
+  }
 
-  /* ---------- LOGGEBOK ---------- */
-  (function () {
-    const container = document.getElementById("logbook");
-    container.className = "logbook";
-    const modal = document.getElementById("log-modal");
-    const DAGER = ["Søndag","Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag"];
-    let log = Store.seed("albania_log", {});
-    const save = () => Store.set("albania_log", log);
-    let currentIso = null;
-
-    function days() {
-      const out = [];
-      let d = new Date(GANG.trip.start + "T00:00:00");
-      const end = new Date(GANG.trip.end + "T00:00:00");
-      let guard = 0;
-      while (d <= end && guard < 60) { out.push(new Date(d)); d.setDate(d.getDate()+1); guard++; }
-      return out;
+  onValue(planRef, snap => {
+    const newPlan = snap.val() || {};
+    // ikke bygg tabellen på nytt hvis brukeren skriver
+    const active = document.activeElement;
+    const isTyping = active && active.tagName === 'INPUT' && active.closest('#plan-body');
+    if (!isTyping) {
+      plan = newPlan;
+      buildTable();
+    } else {
+      plan = newPlan;
     }
-    function isoOf(dt) {
-      return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
-    }
+  });
+})();
 
-    function renderDays() {
-      const list = days();
-      container.innerHTML = list.map((dt, i) => {
-        const iso = isoOf(dt);
-        const hasContent = log[iso] && (log[iso].text || (log[iso].imgs && log[iso].imgs.length));
-        return `
-          <div class="log-day" data-iso="${iso}" data-num="${i+1}" data-label="${DAGER[dt.getDay()]} ${dt.getDate()}. juni">
-            ${hasContent ? `<div class="log-day__has" title="Har innhold"></div>` : ""}
-            <div class="log-day__num">${i+1}</div>
-            <div class="log-day__name">${DAGER[dt.getDay()]}</div>
-            <div class="log-day__date">${dt.getDate()}.${dt.getMonth()+1}</div>
-          </div>`;
-      }).join("");
-      container.querySelectorAll(".log-day").forEach(card =>
-        card.onclick = () => openDay(card.dataset.iso, card.dataset.num, card.dataset.label));
-    }
+/* ---------- LOGGEBOK (Firebase) ---------- */
+(async function () {
+  const { db, ref, set, onValue } = await import('./firebase.js');
+  const container = document.getElementById("logbook");
+  container.className = "logbook";
+  const modal = document.getElementById("log-modal");
+  const DAGER = ["Søndag","Mandag","Tirsdag","Onsdag","Torsdag","Fredag","Lørdag"];
+  let log = {};
+  let currentIso = null;
 
-    function openDay(iso, num, label) {
-      currentIso = iso;
-      document.getElementById("log-eyebrow").textContent = `Dag ${num}`;
-      document.getElementById("log-title").textContent = label;
-      document.getElementById("log-text").value = log[iso]?.text || "";
-      document.getElementById("log-file").value = "";
-      renderGallery();
-      modal.classList.add("is-open");
-      setTimeout(() => document.getElementById("log-text").focus(), 50);
-    }
+  function days() {
+    const out = [];
+    let d = new Date(GANG.trip.start + "T00:00:00");
+    const end = new Date(GANG.trip.end + "T00:00:00");
+    let guard = 0;
+    while (d <= end && guard < 60) { out.push(new Date(d)); d.setDate(d.getDate()+1); guard++; }
+    return out;
+  }
+  function isoOf(dt) {
+    return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}`;
+  }
 
-    function renderGallery() {
-      const imgs = log[currentIso]?.imgs || [];
-      const g = document.getElementById("log-gallery");
-      g.className = "log-gallery";
-      g.innerHTML = imgs.length
-        ? imgs.map((src, i) => `
-            <div class="log-gallery__item">
-              <img src="${src}" alt="bilde ${i+1}">
-              <button class="log-gallery__del" data-idx="${i}">✕</button>
-            </div>`).join("")
-        : `<p class="muted" style="font-size:.9rem">Ingen bilder enda.</p>`;
-      g.querySelectorAll("[data-idx]").forEach(b =>
-        b.onclick = () => {
-          log[currentIso].imgs.splice(+b.dataset.idx, 1);
-          save(); renderGallery(); renderDays();
-        });
-    }
+  function renderDays() {
+    const list = days();
+    container.innerHTML = list.map((dt, i) => {
+      const iso = isoOf(dt);
+      const hasContent = log[iso] && (log[iso].text || (log[iso].imgs && log[iso].imgs.length));
+      return `
+        <div class="log-day" data-iso="${iso}" data-num="${i+1}" data-label="${DAGER[dt.getDay()]} ${dt.getDate()}. juni">
+          ${hasContent ? `<div class="log-day__has" title="Har innhold"></div>` : ""}
+          <div class="log-day__num">${i+1}</div>
+          <div class="log-day__name">${DAGER[dt.getDay()]}</div>
+          <div class="log-day__date">${dt.getDate()}.${dt.getMonth()+1}</div>
+        </div>`;
+    }).join("");
+    container.querySelectorAll(".log-day").forEach(card =>
+      card.onclick = () => openDay(card.dataset.iso, card.dataset.num, card.dataset.label));
+  }
 
-    document.getElementById("log-text").addEventListener("input", () => {
-      if (!log[currentIso]) log[currentIso] = { text: "", imgs: [] };
-      log[currentIso].text = document.getElementById("log-text").value;
-      save(); renderDays();
-    });
+  function openDay(iso, num, label) {
+    currentIso = iso;
+    document.getElementById("log-eyebrow").textContent = `Dag ${num}`;
+    document.getElementById("log-title").textContent = label;
+    document.getElementById("log-text").value = log[iso]?.text || "";
+    document.getElementById("log-file").value = "";
+    renderGallery();
+    modal.classList.add("is-open");
+    setTimeout(() => document.getElementById("log-text").focus(), 50);
+  }
 
-    document.getElementById("log-img-add").onclick = () => {
-      const file = document.getElementById("log-file").files[0];
-      if (!file) { toast("Velg et bilde først 📷"); return; }
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (!log[currentIso]) log[currentIso] = { text: "", imgs: [] };
-        if (!log[currentIso].imgs) log[currentIso].imgs = [];
-        log[currentIso].imgs.push(e.target.result);
-        save(); renderGallery(); renderDays();
-        document.getElementById("log-file").value = "";
-        toast("Bilde lagt til! 📸");
-      };
-      reader.readAsDataURL(file);
-    };
+  function renderGallery() {
+    const imgs = log[currentIso]?.imgs || [];
+    const g = document.getElementById("log-gallery");
+    g.className = "log-gallery";
+    g.innerHTML = imgs.length
+      ? imgs.map((src, i) => `
+          <div class="log-gallery__item">
+            <img src="${src}" alt="bilde ${i+1}">
+            <button class="log-gallery__del" data-idx="${i}">✕</button>
+          </div>`).join("")
+      : `<p class="muted" style="font-size:.9rem">Ingen bilder enda.</p>`;
+    g.querySelectorAll("[data-idx]").forEach(b =>
+      b.onclick = () => {
+        const imgs = [...(log[currentIso]?.imgs || [])];
+        imgs.splice(+b.dataset.idx, 1);
+        set(ref(db, `albania/log/${currentIso}/imgs`), imgs.length ? imgs : null);
+        toast("Bilde slettet 🗑️");
+      });
+  }
 
-    document.getElementById("log-close").onclick = () => modal.classList.remove("is-open");
-    modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("is-open"); });
-
+  document.getElementById("log-text").addEventListener("input", () => {
+    set(ref(db, `albania/log/${currentIso}/text`), document.getElementById("log-text").value);
     renderDays();
-  })();
+  });
+
+  document.getElementById("log-img-add").onclick = () => {
+    const file = document.getElementById("log-file").files[0];
+    if (!file) { toast("Velg et bilde først 📷"); return; }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imgs = [...(log[currentIso]?.imgs || [])];
+      imgs.push(e.target.result);
+      set(ref(db, `albania/log/${currentIso}/imgs`), imgs);
+      document.getElementById("log-file").value = "";
+      toast("Bilde lagt til! 📸");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  document.getElementById("log-close").onclick = () => modal.classList.remove("is-open");
+  modal.addEventListener("click", e => { if (e.target === modal) modal.classList.remove("is-open"); });
+
+  onValue(ref(db, 'albania/log'), snap => {
+    log = snap.val() || {};
+    renderDays();
+    if (currentIso) renderGallery();
+  });
+})();
   </script>
 </body>
 </html>
